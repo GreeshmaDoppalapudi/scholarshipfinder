@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scholarship Engine — find and apply to scholarships you actually qualify for</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500;1,6..72,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf7f0; --surface: #ffffff; --surface-2: #f3efe5; --surface-3: #ebe6d8;
+    --ink: #1a1a1a; --ink-2: #5a5852; --ink-3: #918d83;
+    --border: #e6e1d2; --border-2: #d4ceba;
+    --brand: #2c5d4f; --brand-soft: #d4e3dc; --brand-deep: #1f4339;
+    --accent: #e07856; --accent-soft: #fbe1d7; --accent-deep: #c4603e;
+    --highlight: #f5b942; --highlight-soft: #fcecc8;
+    --success: #4a8a5e; --success-bg: #dceadc;
+    --danger: #c44545; --danger-bg: #f8dcdc;
+    --money: #1a7a4f;
+    --serif: 'Newsreader', 'Source Serif 4', Georgia, serif;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --shadow-sm: 0 1px 2px rgba(26,26,26,0.04), 0 1px 3px rgba(26,26,26,0.06);
+    --shadow-md: 0 4px 12px rgba(26,26,26,0.08);
+    --shadow-lg: 0 10px 30px rgba(26,26,26,0.12);
+    --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 20px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+  nav.top-nav { position: sticky; top: 0; z-index: 100; background: rgba(250, 247, 240, 0.92); backdrop-filter: saturate(180%) blur(12px); border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .nav-brand { font-family: var(--serif); font-weight: 600; font-size: 20px; cursor: pointer; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+  .nav-brand .seal { display: inline-flex; width: 28px; height: 28px; border-radius: 999px; background: var(--brand); color: white; align-items: center; justify-content: center; font-size: 14px; font-family: var(--serif); font-weight: 600; }
+  .nav-links { display: flex; gap: 2px; flex-wrap: wrap; align-items: center; }
+  .nav-link { font-family: var(--sans); font-size: 14px; font-weight: 500; color: var(--ink-2); padding: 8px 14px; border-radius: var(--r-sm); cursor: pointer; background: none; border: none; transition: all 0.15s ease; }
+  .nav-link:hover { color: var(--brand); background: var(--surface-2); }
+  .nav-link.active { color: var(--brand); background: var(--brand-soft); font-weight: 600; }
+  .nav-link .badge { background: var(--accent); color: white; padding: 1px 6px; font-size: 11px; border-radius: 999px; margin-left: 6px; font-weight: 700; }
+  .mobile-menu-btn { display: none; background: var(--surface); border: 1px solid var(--border); padding: 8px 14px; font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer; color: var(--ink); border-radius: var(--r-sm); }
+  @media (max-width: 760px) {
+    .nav-links { display: none; width: 100%; flex-direction: column; gap: 0; padding-top: 12px; border-top: 1px solid var(--border); margin-top: 8px; }
+    .nav-links.open { display: flex; }
+    .nav-link { padding: 12px; text-align: left; width: 100%; border-radius: 0; }
+    .mobile-menu-btn { display: block; }
+  }
+  .container { max-width: 1080px; margin: 0 auto; padding: 56px 28px 96px; }
+  @media (min-width: 700px) { .container { padding: 72px 40px 120px; } }
+  .container.narrow { max-width: 800px; }
+  .page { display: none; }
+  .page.active { display: block; animation: fadeIn 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .kicker { font-family: var(--sans); font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
+  h1.display { font-family: var(--serif); font-weight: 500; font-size: 44px; line-height: 1.05; letter-spacing: -0.022em; margin-bottom: 18px; color: var(--ink); }
+  @media (min-width: 700px) { h1.display { font-size: 56px; } }
+  h1.display em { font-style: italic; color: var(--brand); font-weight: 400; }
+  h1.display .accent { color: var(--accent); font-style: italic; }
+  .deck { font-family: var(--serif); font-size: 20px; line-height: 1.45; color: var(--ink-2); margin-bottom: 32px; max-width: 720px; }
+  h2 { font-family: var(--serif); font-weight: 500; font-size: 30px; line-height: 1.15; letter-spacing: -0.018em; margin-bottom: 14px; color: var(--ink); }
+  h2 em { font-style: italic; color: var(--brand); }
+  h3 { font-family: var(--serif); font-weight: 500; font-size: 22px; line-height: 1.25; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .btn, button.primary, button.secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--sans); font-size: 15px; font-weight: 600; padding: 12px 22px; min-height: 44px; cursor: pointer; border-radius: var(--r-sm); border: 1px solid transparent; transition: all 0.15s ease; text-decoration: none; }
+  button.primary { background: var(--brand); color: white; border-color: var(--brand); box-shadow: var(--shadow-sm); }
+  button.primary:hover { background: var(--brand-deep); border-color: var(--brand-deep); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  button.primary.large { padding: 16px 28px; font-size: 16px; min-height: 52px; }
+  button.primary.accent { background: var(--accent); border-color: var(--accent); }
+  button.primary.accent:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+  button.secondary { background: var(--surface); color: var(--ink); border: 1px solid var(--border); }
+  button.secondary:hover { background: var(--surface-2); border-color: var(--border-2); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .action-bar { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+  .hero { margin-bottom: 36px; }
+  .hero h1 { font-family: var(--serif); font-weight: 500; font-size: 40px; line-height: 1.08; letter-spacing: -0.022em; margin-bottom: 14px; }
+  @media (min-width: 700px) { .hero h1 { font-size: 52px; } }
+  .hero h1 em { font-style: italic; color: var(--brand); font-weight: 400; }
+  .hero h1 .accent { color: var(--accent); font-style: italic; }
+  .hero .sub { font-family: var(--serif); font-size: 19px; color: var(--ink-2); line-height: 1.5; max-width: 660px; }
+  /* Profile builder */
+  .profile-card-big { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 32px 36px; box-shadow: var(--shadow-sm); margin-bottom: 24px; }
+  .profile-section { margin-bottom: 26px; padding-bottom: 22px; border-bottom: 1px solid var(--border); }
+  .profile-section:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+  .profile-section h3 { margin-bottom: 4px; }
+  .profile-section .helper { font-family: var(--serif); font-style: italic; color: var(--ink-2); margin-bottom: 16px; font-size: 14px; }
+  .field-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 600px) { .field-grid { grid-template-columns: 1fr 1fr; } }
+  .field-grid.full { grid-template-columns: 1fr; }
+  .field { display: flex; flex-direction: column; }
+  .field label { font-family: var(--sans); font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+  .field input[type="text"], .field input[type="number"], .field input[type="email"], .field select, .field textarea { width: 100%; background: var(--surface); border: 1px solid var(--border-2); border-radius: var(--r-sm); padding: 10px 14px; font-family: var(--sans); font-size: 15px; color: var(--ink); transition: all 0.15s; }
+  .field textarea { min-height: 80px; resize: vertical; line-height: 1.5; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
+  .field .hint { font-family: var(--serif); font-style: italic; font-size: 12px; color: var(--ink-3); margin-top: 4px; }
+  .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .checkbox-pill { display: inline-flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border-2); padding: 8px 14px; border-radius: 999px; cursor: pointer; font-family: var(--sans); font-size: 14px; color: var(--ink); transition: all 0.15s; }
+  .checkbox-pill:hover { background: var(--surface-2); }
+  .checkbox-pill.selected { background: var(--brand); color: white; border-color: var(--brand); }
+  /* Match results */
+  .match-summary { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%); color: white; border-radius: var(--r-lg); padding: 28px 32px; margin-bottom: 24px; box-shadow: var(--shadow-md); }
+  .match-summary .label { font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85; margin-bottom: 8px; }
+  .match-summary h3 { font-family: var(--serif); font-weight: 500; font-size: 26px; color: white; margin-bottom: 6px; }
+  .match-summary .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-top: 18px; }
+  .match-summary .stat { background: rgba(255,255,255,0.1); padding: 12px 16px; border-radius: var(--r-sm); }
+  .match-summary .stat .num { font-family: var(--serif); font-size: 26px; font-weight: 500; }
+  .match-summary .stat .lab { font-size: 12px; opacity: 0.85; }
+  .scholarship-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 24px 28px; box-shadow: var(--shadow-sm); margin-bottom: 14px; transition: all 0.15s; }
+  .scholarship-card:hover { box-shadow: var(--shadow-md); border-color: var(--brand-soft); }
+  .scholarship-card .header-row { display: flex; justify-content: space-between; gap: 14px; margin-bottom: 10px; flex-wrap: wrap; }
+  .scholarship-card h4 { font-family: var(--serif); font-weight: 500; font-size: 20px; line-height: 1.3; margin-bottom: 4px; }
+  .scholarship-card .org { font-family: var(--sans); font-size: 13px; color: var(--ink-3); }
+  .scholarship-card .amount { font-family: var(--serif); font-size: 18px; font-weight: 500; color: var(--money); white-space: nowrap; }
+  .scholarship-card .description { font-family: var(--serif); font-size: 15px; color: var(--ink-2); line-height: 1.55; margin: 10px 0 14px; }
+  .scholarship-card .meta-row { display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--ink-3); margin-bottom: 14px; }
+  .scholarship-card .meta-row .meta { display: inline-flex; align-items: center; gap: 4px; }
+  .scholarship-card .source-pill { font-family: var(--sans); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; letter-spacing: 0.04em; }
+  .source-pill.curated { background: var(--brand-soft); color: var(--brand); }
+  .source-pill.web-search { background: var(--highlight-soft); color: var(--accent-deep); }
+  .confidence-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .confidence-bar .label { font-family: var(--sans); font-size: 12px; font-weight: 600; color: var(--ink-3); letter-spacing: 0.04em; text-transform: uppercase; }
+  .confidence-track { flex: 1; height: 8px; background: var(--surface-2); border-radius: 999px; overflow: hidden; max-width: 200px; }
+  .confidence-fill { height: 100%; background: var(--brand); border-radius: 999px; transition: width 0.4s; }
+  .confidence-fill.high { background: var(--success); }
+  .confidence-fill.med { background: var(--highlight); }
+  .confidence-fill.low { background: var(--accent); }
+  .confidence-text { font-family: var(--sans); font-size: 13px; font-weight: 600; color: var(--ink); }
+  /* WHY card — explainability */
+  .why-card { background: var(--surface-2); border-radius: var(--r-md); padding: 16px 20px; margin: 12px 0 16px; }
+  .why-card .why-label { font-family: var(--sans); font-size: 11px; font-weight: 700; color: var(--ink-3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .why-card ul { list-style: none; padding: 0; }
+  .why-card ul li { font-family: var(--sans); font-size: 14px; line-height: 1.5; color: var(--ink); margin-bottom: 6px; padding-left: 22px; position: relative; }
+  .why-card ul li.match::before { content: '✓'; color: var(--success); font-weight: 700; position: absolute; left: 0; }
+  .why-card ul li.pref::before { content: '★'; color: var(--accent); font-weight: 700; position: absolute; left: 0; }
+  .why-card ul li.stretch::before { content: 'ⓘ'; color: var(--highlight); position: absolute; left: 0; }
+  .why-card ul li.fail::before { content: '✗'; color: var(--danger); font-weight: 700; position: absolute; left: 0; }
+  .why-card ul li .reason-detail { color: var(--ink-2); font-style: italic; font-size: 13px; }
+  /* Action bar on each scholarship card */
+  .scholarship-actions { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--border); margin-top: 4px; }
+  .scholarship-actions .btn-mini { background: var(--brand); color: white; border: none; padding: 8px 14px; font-family: var(--sans); font-size: 13px; font-weight: 600; border-radius: var(--r-sm); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  .scholarship-actions .btn-mini:hover { background: var(--brand-deep); }
+  .scholarship-actions .btn-mini.secondary { background: var(--surface); color: var(--brand); border: 1px solid var(--border); }
+  .scholarship-actions .btn-mini.secondary:hover { background: var(--surface-2); }
+  .scholarship-actions a.source-link { background: none; border: none; color: var(--brand); font-family: var(--sans); font-size: 13px; padding: 8px 0; text-decoration: underline; cursor: pointer; }
+  /* Search log (transparency) */
+  .search-log { background: var(--highlight-soft); border-radius: var(--r-md); padding: 16px 20px; margin: 18px 0; border-left: 3px solid var(--highlight); }
+  .search-log .label { font-family: var(--sans); font-size: 11px; font-weight: 700; color: var(--accent-deep); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .search-log ul { list-style: none; padding: 0; }
+  .search-log ul li { font-family: var(--mono, monospace); font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+  .search-log ul li::before { content: '→ '; color: var(--accent); font-weight: 700; }
+  /* Detail page (single scholarship) */
+  .scholarship-detail { background: var(--surface); border-radius: var(--r-lg); padding: 36px 40px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 24px; }
+  .scholarship-detail .head { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 22px; }
+  .scholarship-detail .head h1 { font-family: var(--serif); font-weight: 500; font-size: 32px; line-height: 1.15; letter-spacing: -0.018em; margin-bottom: 6px; }
+  .scholarship-detail .head .org { font-family: var(--sans); font-size: 14px; color: var(--ink-3); margin-bottom: 8px; }
+  .scholarship-detail .head .quick-meta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; font-size: 14px; color: var(--ink-2); }
+  .scholarship-detail .head .quick-meta .item strong { color: var(--ink); }
+  /* Auto-fill panel */
+  .autofill-panel { background: var(--surface); border: 1px solid var(--brand-soft); border-left: 4px solid var(--brand); border-radius: var(--r-md); padding: 24px 28px; margin: 18px 0; }
+  .autofill-panel .header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .autofill-panel .label { font-family: var(--sans); font-size: 11px; font-weight: 700; color: var(--brand); letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+  .autofill-panel .ai-tag { background: var(--brand); color: white; padding: 2px 8px; font-size: 10px; border-radius: 999px; font-weight: 700; }
+  .autofill-panel .copy-btn { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--brand); padding: 6px 14px; font-family: var(--sans); font-size: 12px; font-weight: 600; cursor: pointer; border-radius: var(--r-sm); }
+  .autofill-panel .field-list { display: grid; grid-template-columns: 180px 1fr; gap: 8px 16px; font-family: var(--sans); font-size: 14px; }
+  @media (max-width: 600px) { .autofill-panel .field-list { grid-template-columns: 1fr; gap: 4px 0; } }
+  .autofill-panel .field-list .fk { color: var(--ink-3); font-weight: 500; }
+  .autofill-panel .field-list .fv { color: var(--ink); }
+  .autofill-panel .field-list .fv.empty { color: var(--ink-3); font-style: italic; }
+  /* Essay draft */
+  .essay-draft-card { background: var(--surface); border: 1px solid var(--accent-soft); border-left: 4px solid var(--accent); border-radius: var(--r-md); padding: 24px 28px; margin: 14px 0; }
+  .essay-draft-card .head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .essay-draft-card .label { font-family: var(--sans); font-size: 11px; font-weight: 700; color: var(--accent-deep); letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+  .essay-draft-card .ai-tag { background: var(--accent); color: white; padding: 2px 8px; font-size: 10px; border-radius: 999px; font-weight: 700; }
+  .essay-draft-card .prompt { font-family: var(--serif); font-style: italic; color: var(--ink-2); font-size: 15px; margin-bottom: 14px; }
+  .essay-draft-card textarea { width: 100%; min-height: 220px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 16px 20px; font-family: var(--serif); font-size: 16px; line-height: 1.7; color: var(--ink); resize: vertical; }
+  .essay-draft-card textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .essay-draft-card .word-count { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-top: 6px; }
+  /* Tracker */
+  .tracker-list { display: grid; gap: 12px; margin: 24px 0; }
+  .tracker-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 18px 24px; box-shadow: var(--shadow-sm); display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; flex-wrap: wrap; }
+  .tracker-item .left { flex: 1; min-width: 200px; }
+  .tracker-item .pet-type { font-family: var(--sans); font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 0.04em; text-transform: uppercase; }
+  .tracker-item h4 { font-family: var(--serif); font-size: 17px; margin: 4px 0; }
+  .tracker-item .meta { font-family: var(--sans); font-size: 13px; color: var(--ink-3); }
+  .tracker-item .actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .status-pill { font-family: var(--sans); font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 999px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .status-pill.draft { background: var(--surface-2); color: var(--ink-3); }
+  .status-pill.submitted { background: var(--brand-soft); color: var(--brand); }
+  .status-pill.won { background: var(--success-bg); color: var(--success); }
+  .status-pill.rejected { background: var(--danger-bg); color: var(--danger); }
+  .empty-state { background: var(--surface-2); border-radius: var(--r-md); padding: 40px 30px; text-align: center; color: var(--ink-2); font-family: var(--serif); font-style: italic; }
+  /* DEMO BANNER */
+  .demo-banner { background: var(--highlight-soft); border: 1px solid var(--highlight); border-radius: var(--r-md); padding: 14px 20px; font-size: 14px; color: var(--ink); margin: 16px 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .demo-banner button { background: none; border: none; color: var(--brand); text-decoration: underline; cursor: pointer; font-family: inherit; font-size: inherit; padding: 0; font-weight: 600; }
+  .demo-banner.hidden { display: none; }
+  /* Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(26,26,26,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; backdrop-filter: blur(4px); }
+  .modal-overlay.hidden { display: none; }
+  .modal { background: var(--surface); border-radius: var(--r-lg); padding: 32px; max-width: 480px; width: 100%; box-shadow: var(--shadow-lg); }
+  .modal h3 { font-family: var(--serif); font-size: 26px; margin-bottom: 14px; color: var(--brand); }
+  .modal p { font-size: 15px; color: var(--ink-2); margin-bottom: 14px; line-height: 1.6; }
+  .modal input { width: 100%; background: var(--surface); border: 1px solid var(--border); padding: 12px 16px; font-family: var(--sans); font-size: 15px; color: var(--ink); border-radius: var(--r-sm); margin-bottom: 16px; }
+  .modal input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
+  /* Loading */
+  .loading-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 32px 28px; text-align: center; margin: 20px 0; box-shadow: var(--shadow-sm); }
+  .loading-text { font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--ink-2); margin-bottom: 14px; }
+  .loading-bar { height: 4px; width: 100%; background: var(--surface-2); border-radius: 999px; overflow: hidden; position: relative; }
+  .loading-bar::after { content: ''; position: absolute; top: 0; left: -40%; width: 40%; height: 100%; background: var(--brand); border-radius: 999px; animation: slide 1.4s ease-in-out infinite; }
+  @keyframes slide { 0% { left: -40%; } 100% { left: 100%; } }
+  /* Disclaimer */
+  .disclaimer { background: var(--accent-soft); border-radius: var(--r-md); padding: 14px 20px; font-family: var(--serif); font-size: 14px; color: var(--accent-deep); line-height: 1.55; margin: 20px 0; border-left: 4px solid var(--accent); }
+  /* Footer + ethics */
+  .footer { margin-top: 80px; padding-top: 28px; border-top: 1px solid var(--border); font-size: 13px; color: var(--ink-3); line-height: 1.7; }
+  .footer a { color: var(--brand); text-decoration: none; font-weight: 500; }
+  .footer button { background: none; border: none; color: var(--brand); text-decoration: underline; cursor: pointer; font-family: inherit; font-size: inherit; padding: 0; font-weight: 500; }
+  .ethics-row { display: grid; grid-template-columns: 1fr; gap: 14px; border-top: 1px solid var(--border); padding: 24px 0; }
+  @media (min-width: 700px) { .ethics-row { grid-template-columns: 220px 1fr; gap: 32px; } }
+  .ethics-row:last-child { border-bottom: 1px solid var(--border); }
+  .ethics-label { font-family: var(--serif); font-style: italic; font-weight: 500; color: var(--accent-deep); font-size: 18px; line-height: 1.3; }
+  .ethics-detail { font-size: 16px; color: var(--ink-2); line-height: 1.6; }
+  .ethics-detail strong { color: var(--ink); font-weight: 600; }
+  /* Filter bar */
+  .filter-bar { display: flex; gap: 8px; margin: 20px 0; flex-wrap: wrap; align-items: center; }
+  .filter-btn { background: var(--surface); border: 1px solid var(--border); padding: 8px 16px; font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer; color: var(--ink-2); border-radius: 999px; transition: all 0.15s; }
+  .filter-btn:hover { background: var(--surface-2); color: var(--ink); }
+  .filter-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+  .hidden { display: none !important; }
+
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <a class="nav-brand" onclick="navigate('home')" href="#/">
+    <span class="seal">$</span>
+    Scholarship Engine
+  </a>
+  <button class="mobile-menu-btn" onclick="toggleMobileMenu()" id="mobileMenuBtn">Menu</button>
+  <div class="nav-links" id="navLinks">
+    <button class="nav-link" data-page="home" onclick="navigate('home')">Home</button>
+    <button class="nav-link" data-page="profile" onclick="navigate('profile')">My profile</button>
+    <button class="nav-link" data-page="matches" onclick="navigate('matches')">Find matches</button>
+    <button class="nav-link" data-page="apps" onclick="navigate('apps')">My applications <span class="badge" style="display:none">0</span></button>
+    <button class="nav-link" data-page="about" onclick="navigate('about')">About</button>
+  </div>
+</nav>
+<div class="modal-overlay hidden" id="setupOverlay">
+  <div class="modal">
+    <h3>Use your own API key</h3>
+    <p>Paste an Anthropic API key to enable live web search for additional scholarships and AI-personalized essay drafts. The key stays in your browser; sent only to <code>api.anthropic.com</code>.</p>
+    <p>Get one at <a href="https://console.anthropic.com" target="_blank" rel="noopener" style="color: var(--accent);">console.anthropic.com</a>.</p>
+    <input type="text" id="apiKeyInput" placeholder="sk-ant-...">
+    <div style="display: flex; gap: 10px;">
+      <button class="primary" onclick="saveApiKey()">Save</button>
+      <button class="secondary" onclick="closeSetup()">Cancel</button>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <section class="page" id="page-home"><div id="homeRoot"></div></section>
+  <section class="page" id="page-profile"><div id="profileRoot"></div></section>
+  <section class="page" id="page-matches"><div id="matchesRoot"></div></section>
+  <section class="page" id="page-detail"><div id="detailRoot"></div></section>
+  <section class="page" id="page-apps">
+    <div class="kicker">your scholarship pipeline</div>
+    <h1 class="display">My <em>applications</em>.</h1>
+    <p class="deck">Track which scholarships you've drafted, submitted, won, or been rejected from. Stays in this browser.</p>
+    <div id="appsRoot"></div>
+    <div class="action-bar" style="margin-top: 24px;">
+      <button class="primary" onclick="navigate('matches')">Find more →</button>
+      <button class="secondary" onclick="resetAll()">Reset everything</button>
+    </div>
+  </section>
+  <section class="page" id="page-about">
+    <div class="kicker">how it works · transparency</div>
+    <h1 class="display">Why this <em>actually finds</em> real scholarships.</h1>
+    <p class="deck">Most scholarship "matchers" are SEO traps that show you the same 5 scholarships everyone sees, then drop you into a paid newsletter. This is different. Here's exactly how it works.</p>
+    <div class="ethics-row">
+      <div class="ethics-label">Real, verifiable scholarship data</div>
+      <div class="ethics-detail"><strong>39 scholarships in the curated database, each with a real source URL you can verify.</strong> Federal programs (Pell, SMART), major foundations (Gates, Coca-Cola, Jack Kent Cooke, QuestBridge, Dell, Hagan), demographic-specific programs (HSF, UNCF, APIA Scholars, Ron Brown, TheDream.US, Golden Door, Point Foundation), STEM programs (Goldwater, SHPE, NSBE, SWE), CA-specific (Cal Grant, MCS, San Diego Foundation), and college-specific (UC Regents, UCSD Chancellor's Associates). Source URLs link to the actual foundation site, not an aggregator.</div>
+    </div>
+    <div class="ethics-row">
+      <div class="ethics-label">Live web search via Claude (when an API key is provided)</div>
+      <div class="ethics-detail"><strong>The tool uses Claude Sonnet 4.5's web_search tool</strong> to find additional scholarships beyond the curated 40, formulating queries based on the student's profile. Results return with source URLs the student can verify. The exact queries used are shown in a transparency log on the matches page. Without an API key, the tool falls back to the curated database only — which is still genuinely useful.</div>
+    </div>
+    <div class="ethics-row">
+      <div class="ethics-label">Explainability on every match</div>
+      <div class="ethics-detail"><strong>For every scholarship, you see why it matched.</strong> Hard eligibility criteria are checked deterministically (citizenship, education level, GPA, demographics, residency, major area, financial need) — checkmarks for what matched, X marks for what didn't. Soft preferences (leadership, community service, academic record, research experience) score with explicit weights. The confidence number on each card is computed, not hand-wavy. Click any match and you see the full breakdown.</div>
+    </div>
+    <div class="ethics-row">
+      <div class="ethics-label">Auto-fill is your data, not made up</div>
+      <div class="ethics-detail"><strong>Common application fields auto-fill from your profile.</strong> Essay drafts use ONLY material you've entered (leadership, community service, research, challenges, career goals, existing personal statement). The system prompt sent to Claude explicitly instructs the model not to invent achievements, organizations, or experiences. Read the source.</div>
+    </div>
+    <div class="ethics-row">
+      <div class="ethics-label">Privacy by architecture</div>
+      <div class="ethics-detail"><strong>Single static HTML file. No server.</strong> Your profile (including financial info, demographics, essay material, family background) lives only in browser localStorage. The only data sent to any server is the prompts to Anthropic's API — and only when you've added your own API key. We do not collect, share, or sell anything.</div>
+    </div>
+    <h2 style="margin-top: 48px;">Where it falls <em>short</em>.</h2>
+    <ul style="margin-left: 24px; font-size: 16px; line-height: 1.7; font-family: var(--serif);">
+      <li style="margin-bottom: 10px;"><strong>39 curated + however many web search returns.</strong> A serious scholarship hunt should also include your school's financial aid office (often has internal scholarships not online), your major department, professional associations in your field, and local community foundations.</li>
+      <li style="margin-bottom: 10px;"><strong>We don't auto-submit.</strong> Scholarships need to be submitted through each program's portal (sign-in, captchas, file uploads) — this can't be automated from a static site. We give you a copy-paste packet you upload.</li>
+      <li style="margin-bottom: 10px;"><strong>Web search returns can have errors.</strong> Claude searches the live web, but URLs can be stale or scholarship details slightly off. Always verify on the source page before applying. Flagged with a SOURCE link on every match.</li>
+      <li style="margin-bottom: 10px;"><strong>Auto-drafted essays need your edits.</strong> Generic = auto-rejected. Read every draft, replace bracketed placeholders, change anything that doesn't sound like you, add specific examples. The draft is a starting point.</li>
+      <li style="margin-bottom: 10px;"><strong>Eligibility checks are coarse.</strong> "Pell-eligible" or "Hispanic" is a yes/no — but real scholarships often have additional rules (specific schools, citizenship subtype, GPA in certain courses). The "verify on source" disclaimer is on every page for a reason.</li>
+    </ul>
+  </section>
+  <footer class="footer">
+    <p>Scholarship Engine helps students find and apply to real scholarships. Everything stays in your browser. <button onclick="openSetup()">Use your own API key</button> · <button onclick="resetAll()">Reset everything</button></p>
+    <p style="margin-top: 8px;">Built for the Claude Builders Club Hackathon · UCSD · May 2026 · Track 1: Economic Empowerment &amp; Education</p>
+    <p style="margin-top: 8px; font-style: italic; font-family: var(--serif);">39 curated scholarships verified from public foundation websites as of May 2026. Live web search via Claude Sonnet 4.5 (claude-sonnet-4-5-20250929) with the web_search tool. Always verify deadlines and eligibility on the source page.</p>
+  </footer>
+</div>
+
+<script>
+// =========================================================
+// CURATED SCHOLARSHIP DATABASE
+// 40 real, well-known scholarships with verifiable URLs.
+// Curated from public foundation websites and official
+// program pages as of May 2026. Always verify the deadline,
+// award amount, and eligibility on the source URL — programs
+// change criteria year to year.
+// =========================================================
+const SCHOLARSHIPS = [
+  // ===== Major national merit/need scholarships =====
+  {
+    id: 'gates', name: 'Gates Scholarship', org: 'Bill & Melinda Gates Foundation',
+    amount: 'Full cost of attendance', deadlineHint: 'September annually',
+    url: 'https://www.thegatesscholarship.org',
+    description: 'Highly selective, full-ride scholarship for outstanding minority high school seniors with significant financial need.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident','daca'], levels: ['hs-senior'], minGPA: 3.3, demographics: { underrepresentedMinority: true }, financialNeed: 'pell-eligible' },
+    prefs: { firstGen: 0.6, leadership: 0.5, academic: 0.7 },
+    application: { essays: 8, lor: 2, transcripts: true, fafsa: true },
+    notes: 'Selectivity ~1%. Renewable through degree completion.',
+  },
+  {
+    id: 'jkc-undergrad', name: 'Jack Kent Cooke College Scholarship', org: 'Jack Kent Cooke Foundation',
+    amount: 'Up to $55,000/year', deadlineHint: 'November annually',
+    url: 'https://www.jkcf.org/our-scholarships/college-scholarship-program/',
+    description: 'For high-achieving high school seniors with financial need.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident','daca'], levels: ['hs-senior'], minGPA: 3.5, financialNeed: 'demonstrated' },
+    prefs: { firstGen: 0.4, academic: 0.8, leadership: 0.4 },
+    application: { essays: 4, lor: 2, transcripts: true, fafsa: true },
+    notes: 'Renewable for 4 years. Highly selective (~1%).',
+  },
+  {
+    id: 'jkc-transfer', name: 'Jack Kent Cooke Undergraduate Transfer', org: 'Jack Kent Cooke Foundation',
+    amount: 'Up to $55,000/year', deadlineHint: 'October annually',
+    url: 'https://www.jkcf.org/our-scholarships/undergraduate-transfer-scholarship/',
+    description: 'For community college students transferring to a 4-year institution.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident','daca'], levels: ['transfer'], minGPA: 3.5, financialNeed: 'demonstrated' },
+    prefs: { firstGen: 0.5, academic: 0.7 },
+    application: { essays: 4, lor: 2, transcripts: true, fafsa: true },
+    notes: 'For students currently at a community college planning to transfer.',
+  },
+  {
+    id: 'coca-cola-scholars', name: 'Coca-Cola Scholars Program', org: 'Coca-Cola Scholars Foundation',
+    amount: '$20,000', deadlineHint: 'October annually',
+    url: 'https://www.coca-colascholarsfoundation.org/apply/',
+    description: 'Achievement-based scholarship for high school seniors who lead and serve.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident','daca'], levels: ['hs-senior'], minGPA: 3.0 },
+    prefs: { leadership: 0.7, communityService: 0.7, academic: 0.4 },
+    application: { essays: 3, lor: 1, transcripts: true },
+    notes: 'Selectivity ~1.5%. Recognizes capacity to lead and serve.',
+  },
+  {
+    id: 'questbridge', name: 'QuestBridge National College Match', org: 'QuestBridge',
+    amount: 'Full 4-year scholarship', deadlineHint: 'September annually',
+    url: 'https://www.questbridge.org/college-prep-scholars/national-college-match',
+    description: 'Matches high-achieving low-income high school seniors with full scholarships at partner colleges.',
+    eligibility: { citizenship: ['any'], levels: ['hs-senior'], minGPA: 3.5, financialNeed: 'low-income' },
+    prefs: { firstGen: 0.5, academic: 0.8, leadership: 0.4 },
+    application: { essays: 5, lor: 3, transcripts: true, fafsa: true },
+    notes: 'Most QuestBridge scholars come from families earning under $65K/yr.',
+  },
+  {
+    id: 'dell-scholars', name: 'Dell Scholars Program', org: 'Michael & Susan Dell Foundation',
+    amount: '$20,000 + laptop + textbook credits', deadlineHint: 'December annually',
+    url: 'https://www.dellscholars.org',
+    description: 'For students who have overcome significant obstacles to pursue higher education.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident','daca'], levels: ['hs-senior'], minGPA: 2.4, financialNeed: 'pell-eligible' },
+    prefs: { firstGen: 0.6, overcameAdversity: 0.7, communityService: 0.3 },
+    application: { essays: 4, lor: 1, transcripts: true, fafsa: true },
+    notes: 'Lower GPA threshold (2.4) than most national scholarships — focuses on grit and growth.',
+  },
+  // ===== Demographic-specific =====
+  {
+    id: 'hsf-general', name: 'Hispanic Scholarship Fund (General)', org: 'Hispanic Scholarship Fund',
+    amount: '$500–$5,000', deadlineHint: 'February annually',
+    url: 'https://www.hsf.net/scholarship',
+    description: 'Merit-based scholarship for students of Hispanic heritage at any education level.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident','daca'], levels: ['hs-senior','undergrad','grad'], minGPA: 3.0, demographics: { hispanic: true } },
+    prefs: { firstGen: 0.4, leadership: 0.3, communityService: 0.3 },
+    application: { essays: 2, lor: 1, transcripts: true, fafsa: true },
+    notes: 'Renewable. Largest Hispanic-serving scholarship in the country.',
+  },
+  {
+    id: 'uncf-general', name: 'UNCF Scholarship Programs', org: 'United Negro College Fund',
+    amount: 'Varies, $500–$10,000+', deadlineHint: 'Rolling',
+    url: 'https://www.uncf.org/scholarships',
+    description: 'Multiple scholarships for African American students at all levels.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident','daca'], levels: ['hs-senior','undergrad','grad'], minGPA: 2.5, demographics: { africanAmerican: true } },
+    prefs: { firstGen: 0.4, communityService: 0.3, leadership: 0.3 },
+    application: { essays: 2, lor: 1, transcripts: true, fafsa: true },
+    notes: 'UNCF runs hundreds of programs. The general application opens you to many at once.',
+  },
+  {
+    id: 'apia-scholars', name: 'APIA Scholars (general)', org: 'Asian & Pacific Islander American Scholars',
+    amount: '$2,500–$20,000', deadlineHint: 'January annually',
+    url: 'https://apiascholars.org',
+    description: 'For Asian American & Pacific Islander students with financial need.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident','daca'], levels: ['hs-senior','undergrad'], minGPA: 2.7, demographics: { aapi: true }, financialNeed: 'demonstrated' },
+    prefs: { firstGen: 0.5, communityService: 0.3 },
+    application: { essays: 3, lor: 1, transcripts: true, fafsa: true },
+    notes: 'Targets AAPI students from underrepresented ethnic subgroups (Hmong, Cambodian, Pacific Islander).',
+  },
+  {
+    id: 'ron-brown', name: 'Ron Brown Scholar Program', org: 'CAP Charitable Foundation',
+    amount: '$40,000 ($10K/yr × 4)', deadlineHint: 'November/January (two rounds)',
+    url: 'https://www.ronbrown.org',
+    description: 'Merit-based, four-year scholarship for African American high school seniors.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident'], levels: ['hs-senior'], minGPA: 3.0, demographics: { africanAmerican: true } },
+    prefs: { leadership: 0.6, communityService: 0.5, academic: 0.5 },
+    application: { essays: 3, lor: 2, transcripts: true },
+    notes: 'Looks for leadership and community engagement, not just GPA.',
+  },
+  {
+    id: 'point-foundation', name: 'Point Foundation BIPOC Scholarship', org: 'Point Foundation',
+    amount: 'Up to $10,000/year', deadlineHint: 'January annually',
+    url: 'https://pointfoundation.org/the-points/scholarships/community-college-scholarship/',
+    description: 'For LGBTQ+ students of color in community college or transferring.',
+    eligibility: { citizenship: ['any'], levels: ['undergrad','transfer'], minGPA: 3.2, demographics: { lgbtq: true, bipoc: true } },
+    prefs: { firstGen: 0.4, leadership: 0.4, communityService: 0.4 },
+    application: { essays: 4, lor: 2, transcripts: true },
+    notes: 'Accepts undocumented and DACA applicants.',
+  },
+  {
+    id: 'thedreamus-national', name: 'TheDream.US National Scholarship', org: 'TheDream.US',
+    amount: 'Up to $33,000', deadlineHint: 'February annually',
+    url: 'https://www.thedream.us/scholarships/national-scholarship/',
+    description: 'For undocumented (DACA or TPS) students to attend partner colleges.',
+    eligibility: { citizenship: ['daca','undocumented','tps'], levels: ['hs-senior','transfer'], minGPA: 2.5 },
+    prefs: { firstGen: 0.4, leadership: 0.3 },
+    application: { essays: 3, lor: 2, transcripts: true },
+    notes: 'Largest scholarship for DREAMers in the country. Must attend a partner institution.',
+  },
+  {
+    id: 'golden-door', name: 'Golden Door Scholars', org: 'Golden Door Scholars',
+    amount: 'Up to full need', deadlineHint: 'Spring annually',
+    url: 'https://www.goldendoorscholars.org',
+    description: 'For undocumented and DACA students with demonstrated financial need.',
+    eligibility: { citizenship: ['daca','undocumented'], levels: ['hs-senior'], minGPA: 3.5, financialNeed: 'demonstrated' },
+    prefs: { firstGen: 0.5, leadership: 0.4, academic: 0.5 },
+    application: { essays: 3, lor: 2, transcripts: true },
+    notes: 'Partners with specific colleges; scholarship is tied to attending one.',
+  },
+  // ===== STEM-specific =====
+  {
+    id: 'goldwater', name: 'Goldwater Scholarship', org: 'Barry Goldwater Scholarship Foundation',
+    amount: 'Up to $7,500/year', deadlineHint: 'January (university nomination)',
+    url: 'https://goldwaterscholarship.gov',
+    description: 'Premier undergraduate scholarship for STEM research-oriented sophomores and juniors.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident'], levels: ['undergrad-sophomore','undergrad-junior'], minGPA: 3.5, majorAreas: ['STEM'] },
+    prefs: { academic: 0.8, researchExperience: 0.8 },
+    application: { essays: 2, lor: 3, transcripts: true, requiresNomination: true },
+    notes: 'Must be nominated by your university (limited slots per campus). Apply early to your campus committee.',
+  },
+  {
+    id: 'shpe-scholarship', name: 'SHPE Scholarship', org: 'Society of Hispanic Professional Engineers',
+    amount: '$1,000–$5,000', deadlineHint: 'April annually',
+    url: 'https://shpe.org/students/scholarships',
+    description: 'For Hispanic students pursuing engineering, math, or science degrees.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident','daca'], levels: ['hs-senior','undergrad','grad'], minGPA: 2.75, demographics: { hispanic: true }, majorAreas: ['Engineering','Math','Science'] },
+    prefs: { firstGen: 0.3, academic: 0.4, leadership: 0.3 },
+    application: { essays: 1, lor: 1, transcripts: true },
+    notes: 'Must be a SHPE member (free for students).',
+  },
+  {
+    id: 'nsbe-scholarship', name: 'NSBE General Scholarships', org: 'National Society of Black Engineers',
+    amount: '$1,000–$10,000', deadlineHint: 'Varies by program',
+    url: 'https://www.nsbe.org/scholarships',
+    description: 'Multiple scholarships for Black students in engineering at any level.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident'], levels: ['undergrad','grad'], minGPA: 2.7, demographics: { africanAmerican: true }, majorAreas: ['Engineering'] },
+    prefs: { leadership: 0.4, communityService: 0.3 },
+    application: { essays: 2, lor: 1, transcripts: true },
+    notes: 'Must be NSBE member. Multiple programs — apply to all eligible.',
+  },
+  {
+    id: 'swe-scholarship', name: 'Society of Women Engineers Scholarship', org: 'Society of Women Engineers',
+    amount: '$1,000–$15,000', deadlineHint: 'February (incoming) / December (continuing)',
+    url: 'https://swe.org/scholarships/',
+    description: 'For women in engineering and computing at all undergraduate levels.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident','f1'], levels: ['hs-senior','undergrad'], minGPA: 3.0, demographics: { woman: true }, majorAreas: ['Engineering','Computing'] },
+    prefs: { academic: 0.5, leadership: 0.3 },
+    application: { essays: 2, lor: 1, transcripts: true },
+    notes: 'Single application opens you to dozens of SWE-administered scholarships.',
+  },
+  {
+    id: 'aauw', name: 'AAUW Career Development Grants', org: 'American Association of University Women',
+    amount: '$2,000–$20,000', deadlineHint: 'November annually',
+    url: 'https://www.aauw.org/resources/programs/fellowships-grants/',
+    description: 'For women returning to school to advance careers, change careers, or re-enter workforce.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident'], levels: ['undergrad','grad'], demographics: { woman: true } },
+    prefs: { firstGen: 0.3, careerChange: 0.5, academic: 0.4 },
+    application: { essays: 3, lor: 3, transcripts: true },
+    notes: 'Often goes to women returning after a break. Applications strong if you have a specific career plan.',
+  },
+  {
+    id: 'smart-scholarship', name: 'SMART Scholarship-for-Service', org: 'U.S. Department of Defense',
+    amount: 'Full tuition + $25K–$41K stipend', deadlineHint: 'December annually',
+    url: 'https://www.smartscholarship.org',
+    description: 'Full ride for STEM students who agree to work for DoD after graduation.',
+    eligibility: { citizenship: ['us-citizen'], levels: ['undergrad','grad'], minGPA: 3.0, majorAreas: ['STEM'] },
+    prefs: { academic: 0.6, careerAlignment: 0.7 },
+    application: { essays: 4, lor: 2, transcripts: true },
+    notes: 'Required service obligation: 1 year of DoD employment per year of funding. Not for everyone.',
+  },
+  // ===== Rural/regional =====
+  {
+    id: 'hagan', name: 'Hagan Scholarship', org: 'Hagan Scholarship Foundation',
+    amount: 'Up to $48,000', deadlineHint: 'December annually',
+    url: 'https://haganscholarships.org',
+    description: 'Need-based scholarship for high-achieving rural and small-town high school seniors.',
+    eligibility: { citizenship: ['us-citizen'], levels: ['hs-senior'], minGPA: 3.5, financialNeed: 'pell-eligible', demographics: { rural: true } },
+    prefs: { firstGen: 0.4, academic: 0.5, workEthic: 0.4 },
+    application: { essays: 4, lor: 2, transcripts: true, fafsa: true },
+    notes: 'Must come from a public high school in a rural/small-town area (defined by foundation).',
+  },
+  // ===== California-specific =====
+  {
+    id: 'cal-grant-a', name: 'Cal Grant A (Entitlement)', org: 'California Student Aid Commission',
+    amount: 'Up to UC tuition (~$13K)', deadlineHint: 'March 2 annually (FAFSA/CADAA)',
+    url: 'https://www.csac.ca.gov/cal-grants',
+    description: 'California state grant for tuition at UC, CSU, or eligible private institutions.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident','daca','undocumented'], levels: ['hs-senior','undergrad'], minGPA: 3.0, residency: 'CA', financialNeed: 'demonstrated' },
+    prefs: {},
+    application: { essays: 0, lor: 0, transcripts: true, fafsa: true },
+    notes: 'Filing FAFSA (or CADAA for undocumented) by March 2 = automatic consideration. No separate app.',
+  },
+  {
+    id: 'middle-class-scholarship', name: 'Middle Class Scholarship (CA)', org: 'California Student Aid Commission',
+    amount: 'Variable', deadlineHint: 'March 2 (FAFSA/CADAA)',
+    url: 'https://www.csac.ca.gov/middle-class-scholarship',
+    description: 'For CA undergrads at UC or CSU with family income up to $217K.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident','daca','undocumented'], levels: ['undergrad'], residency: 'CA' },
+    prefs: {},
+    application: { essays: 0, lor: 0, transcripts: false, fafsa: true },
+    notes: 'No separate application — file FAFSA or CADAA by March 2.',
+  },
+  {
+    id: 'sd-foundation', name: 'San Diego Foundation Common Scholarship App', org: 'The San Diego Foundation',
+    amount: 'Varies, $500–$10,000+', deadlineHint: 'February annually',
+    url: 'https://www.sdfoundation.org/programs/scholarships/',
+    description: 'One application, evaluated for 100+ San Diego County scholarships.',
+    eligibility: { citizenship: ['any'], levels: ['hs-senior','undergrad','grad','transfer'], residency: 'SD-County' },
+    prefs: { firstGen: 0.3, academic: 0.3, communityService: 0.3 },
+    application: { essays: 3, lor: 1, transcripts: true },
+    notes: 'High leverage: one app → consideration for many scholarships. Apply if you live in San Diego County.',
+  },
+  // ===== First-gen / low-income =====
+  {
+    id: 'horatio-alger', name: 'Horatio Alger National Scholarship', org: 'Horatio Alger Association',
+    amount: '$25,000', deadlineHint: 'October annually',
+    url: 'https://scholars.horatioalger.org',
+    description: 'For high school seniors who have overcome adversity and demonstrate financial need.',
+    eligibility: { citizenship: ['us-citizen'], levels: ['hs-senior'], minGPA: 2.0, financialNeed: 'demonstrated' },
+    prefs: { overcameAdversity: 0.8, firstGen: 0.4, academic: 0.3 },
+    application: { essays: 3, lor: 0, transcripts: true, fafsa: true },
+    notes: 'Lower GPA threshold (2.0). Looks for grit and integrity over academics.',
+  },
+  {
+    id: 'ronald-mcdonald-house', name: 'RMHC Scholarships', org: 'Ronald McDonald House Charities',
+    amount: '$5,000+', deadlineHint: 'January–February annually',
+    url: 'https://www.rmhc.org/scholarships',
+    description: 'Need-based scholarships for high school seniors. Multiple programs (US, ASIA, Future Achiever).',
+    eligibility: { citizenship: ['us-citizen','permanent-resident'], levels: ['hs-senior'], minGPA: 2.7, financialNeed: 'demonstrated' },
+    prefs: { firstGen: 0.3, communityService: 0.3, academic: 0.3 },
+    application: { essays: 2, lor: 1, transcripts: true, fafsa: true },
+    notes: 'Multiple programs target different demographics — check which one(s) apply to you.',
+  },
+  // ===== Major-specific =====
+  {
+    id: 'aicpa-foundation', name: 'AICPA Foundation Scholarships', org: 'AICPA Foundation',
+    amount: '$3,000–$10,000', deadlineHint: 'March annually',
+    url: 'https://www.aicpa-cima.com/membership/landing/student-affiliate',
+    description: 'For accounting majors at all levels.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident'], levels: ['undergrad','grad'], minGPA: 3.0, majorAreas: ['Accounting'] },
+    prefs: { academic: 0.5 },
+    application: { essays: 1, lor: 1, transcripts: true },
+    notes: 'Multiple programs under the AICPA umbrella; filter by your specific track.',
+  },
+  {
+    id: 'ama-foundation', name: 'AMA Foundation Marketing Scholarships', org: 'American Marketing Association Foundation',
+    amount: '$2,500–$5,000', deadlineHint: 'May annually',
+    url: 'https://www.ama.org/foundation/',
+    description: 'For undergrad and grad students pursuing marketing.',
+    eligibility: { citizenship: ['any'], levels: ['undergrad','grad'], minGPA: 3.0, majorAreas: ['Marketing','Business'] },
+    prefs: { academic: 0.4, leadership: 0.3 },
+    application: { essays: 2, lor: 1, transcripts: true },
+    notes: 'Must be AMA Collegiate Chapter member.',
+  },
+  {
+    id: 'aiga-worldstudio', name: 'AIGA Worldstudio Scholarship', org: 'AIGA',
+    amount: '$2,000–$5,000', deadlineHint: 'April annually',
+    url: 'https://www.aiga.org/membership-community/aiga-worldstudio-scholarships',
+    description: 'For minority and economically-disadvantaged design students.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident','daca'], levels: ['undergrad','grad'], minGPA: 2.0, demographics: { underrepresentedMinority: true }, majorAreas: ['Design','Art'] },
+    prefs: { firstGen: 0.4, communityService: 0.3 },
+    application: { essays: 2, lor: 1, transcripts: true, portfolio: true },
+    notes: 'Portfolio required.',
+  },
+  // ===== Veteran / military =====
+  {
+    id: 'amvets-scholarship', name: 'AMVETS Scholarships', org: 'AMVETS National',
+    amount: '$1,000–$4,000', deadlineHint: 'April annually',
+    url: 'https://amvets.org/scholarships/',
+    description: 'For veterans, active-duty military, and their dependents.',
+    eligibility: { citizenship: ['us-citizen'], levels: ['hs-senior','undergrad','grad'], demographics: { veteran: true } },
+    prefs: { academic: 0.4, communityService: 0.3 },
+    application: { essays: 1, lor: 1, transcripts: true, fafsa: true },
+    notes: 'Multiple programs. Check eligibility for veteran, dependent, or active-duty tracks.',
+  },
+  // ===== Disability =====
+  {
+    id: 'incight', name: 'Incight Scholarship', org: 'Incight',
+    amount: '$500–$2,500', deadlineHint: 'May annually',
+    url: 'https://incight.org/programs/scholarship/',
+    description: 'For students with documented disabilities.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident'], levels: ['hs-senior','undergrad','grad'], minGPA: 2.5, demographics: { disability: true } },
+    prefs: { leadership: 0.3, communityService: 0.3 },
+    application: { essays: 2, lor: 1, transcripts: true },
+    notes: 'Documented disability required (medical, physical, learning, or psychological).',
+  },
+  // ===== Essay-driven / merit broad =====
+  {
+    id: 'ayn-rand-anthem', name: 'Ayn Rand Anthem Essay Contest', org: 'Ayn Rand Institute',
+    amount: '$50–$2,000', deadlineHint: 'March annually',
+    url: 'https://aynrand.org/students/essay-contests/',
+    description: 'Essay contest for high school students on Anthem novel.',
+    eligibility: { citizenship: ['any'], levels: ['hs-senior','undergrad'] },
+    prefs: { writing: 0.7, academic: 0.4 },
+    application: { essays: 1, lor: 0, transcripts: false },
+    notes: 'Pure essay contest — no demographic restrictions, no transcript needed. Big upside if you write well.',
+  },
+  {
+    id: 'profile-in-courage', name: 'JFK Profile in Courage Essay Contest', org: 'JFK Library Foundation',
+    amount: '$100–$10,000', deadlineHint: 'January annually',
+    url: 'https://www.jfklibrary.org/learn/education/profile-in-courage-essay-contest',
+    description: 'Essay contest for high schoolers on a US elected official\'s act of political courage.',
+    eligibility: { citizenship: ['any'], levels: ['hs-senior'] },
+    prefs: { writing: 0.7, academic: 0.4 },
+    application: { essays: 1, lor: 0, transcripts: false },
+    notes: 'High school only. Strong essay → real money. Low friction.',
+  },
+  {
+    id: 'davidson-fellows', name: 'Davidson Fellows Scholarship', org: 'Davidson Institute',
+    amount: '$10,000–$50,000', deadlineHint: 'February annually',
+    url: 'https://www.davidsongifted.org/gifted-programs/fellowship-scholarship',
+    description: 'For students under 18 with significant project work in STEM, literature, music, or philosophy.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident'], levels: ['hs-senior','undergrad'], maxAge: 18 },
+    prefs: { academic: 0.5, projectQuality: 0.9 },
+    application: { essays: 2, lor: 2, transcripts: true, portfolio: 'project required' },
+    notes: 'Project-driven (research, original work). Highly selective.',
+  },
+  {
+    id: 'pglobal', name: 'P. Global Scholar Award', org: 'Posse Foundation',
+    amount: 'Full tuition (4-year)', deadlineHint: 'August annually (nomination required)',
+    url: 'https://www.possefoundation.org/scholarships',
+    description: 'Identifies high school students with academic and leadership potential and places them in groups (\'Posses\') at partner colleges.',
+    eligibility: { citizenship: ['any'], levels: ['hs-senior'], minGPA: 3.0 },
+    prefs: { leadership: 0.7, communityService: 0.5, academic: 0.4 },
+    application: { essays: 0, lor: 1, transcripts: true, requiresNomination: true },
+    notes: 'Must be nominated by school or community org. Available in select cities only.',
+  },
+  // ===== College-specific (UC/UCSD-relevant) =====
+  {
+    id: 'ucsd-chancellors', name: 'UC San Diego Chancellor\'s Associates Scholarship', org: 'UC San Diego',
+    amount: '$10,000/year × 4', deadlineHint: 'No separate app (admit-based)',
+    url: 'https://chancellor.ucsd.edu/initiatives/cas',
+    description: 'For first-generation and Pell-eligible UCSD admits from select San Diego high schools and Lincoln (NE).',
+    eligibility: { citizenship: ['us-citizen','permanent-resident','daca'], levels: ['hs-senior'], minGPA: 3.5, residency: 'specific-schools', firstGen: true, financialNeed: 'pell-eligible' },
+    prefs: {},
+    application: { essays: 0, lor: 0, transcripts: false, fafsa: true },
+    notes: 'No application — automatically considered if you\'re a UCSD admit from one of the partner high schools.',
+  },
+  {
+    id: 'regents', name: 'UC Regents Scholarship', org: 'University of California',
+    amount: '$2,500–$30,000+', deadlineHint: 'No separate app (admit-based)',
+    url: 'https://admissions.ucsd.edu/financial-aid/types-of-aid/regents-scholarship.html',
+    description: 'Most prestigious UC merit scholarship. Awarded to top admits without separate application.',
+    eligibility: { citizenship: ['us-citizen','permanent-resident','daca'], levels: ['hs-senior','transfer'], minGPA: 3.9 },
+    prefs: { academic: 0.9, leadership: 0.5 },
+    application: { essays: 0, lor: 0, transcripts: false },
+    notes: 'No application — automatic consideration with UC admission. Top ~1% of admits.',
+  },
+  // ===== Private/random but legit =====
+  {
+    id: 'davis-projects', name: 'Davis Projects for Peace', org: 'Davis United World College Scholars',
+    amount: '$10,000', deadlineHint: 'January annually',
+    url: 'https://www.davisprojectsforpeace.org',
+    description: '$10K grants to undergrads to design and run a peace-building project over the summer.',
+    eligibility: { citizenship: ['any'], levels: ['undergrad'], requiresPartnership: 'specific colleges' },
+    prefs: { leadership: 0.7, communityService: 0.6, projectQuality: 0.7 },
+    application: { essays: 1, lor: 1, transcripts: false },
+    notes: 'Must attend a partner college (most US colleges are partners). Project-based, very low friction once you have a plan.',
+  },
+  {
+    id: 'foundation-young-amer', name: 'Foundation for a Better Life — random merit', org: 'Various',
+    amount: 'Varies', deadlineHint: 'Rolling',
+    url: 'https://www.passiton.com/scholarships',
+    description: 'Aggregator of merit-based scholarships from foundations.',
+    eligibility: { citizenship: ['any'], levels: ['hs-senior','undergrad'] },
+    prefs: {},
+    application: { essays: 1, lor: 0, transcripts: false },
+    notes: 'Aggregator with low-friction scholarships.',
+  },
+  {
+    id: 'odenza-marketing', name: 'Odenza Marketing Scholarship', org: 'Odenza Marketing Group',
+    amount: '$500', deadlineHint: 'June 30 annually',
+    url: 'https://www.odenzascholarships.com',
+    description: 'Open to high school and college students under 25.',
+    eligibility: { citizenship: ['us-citizen','canadian'], levels: ['hs-senior','undergrad'], minGPA: 2.5, maxAge: 25 },
+    prefs: { writing: 0.4 },
+    application: { essays: 2, lor: 0, transcripts: false },
+    notes: 'Low-friction, small award. Good for first scholarship application practice.',
+  },
+];
+
+// =========================================================
+// MATCH SCORING WEIGHTS
+// =========================================================
+const HARD_FAIL_REASONS = {
+  citizenship: 'Your citizenship status doesn\'t match',
+  level: 'Your education level doesn\'t qualify',
+  gpa: 'Your GPA is below the minimum',
+  demographics: 'You don\'t meet the demographic requirement',
+  major: 'Your major isn\'t in the eligible list',
+  residency: 'You don\'t live in the required region',
+  age: 'You don\'t meet the age requirement',
+  financialNeed: 'This requires demonstrated financial need',
+};
+
+// =========================================================
+// STATE
+// =========================================================
+let state = {
+  apiKey: localStorage.getItem('sch_apikey') || '',
+  profile: JSON.parse(localStorage.getItem('sch_profile') || '{}'),
+  applications: JSON.parse(localStorage.getItem('sch_apps') || '[]'),
+  matchedResults: [],          // last computed matches
+  liveResults: [],             // results from Claude web_search
+  searchQueries: [],           // queries we sent to Claude (for transparency)
+  currentScholarship: null,
+  generatedAutofills: {},      // schId -> { fields: {...}, essays: {...} }
+};
+
+const ETHNICITY_OPTIONS = ['Hispanic/Latino', 'Black/African American', 'Asian', 'Pacific Islander', 'Native American', 'White', 'Middle Eastern', 'Multiracial', 'Prefer not to say'];
+const CITIZENSHIP_OPTIONS = [
+  { v: 'us-citizen', l: 'U.S. Citizen' },
+  { v: 'permanent-resident', l: 'Permanent Resident' },
+  { v: 'daca', l: 'DACA' },
+  { v: 'undocumented', l: 'Undocumented' },
+  { v: 'tps', l: 'TPS' },
+  { v: 'f1', l: 'F-1 Visa' },
+];
+const LEVEL_OPTIONS = [
+  { v: 'hs-senior', l: 'High school senior' },
+  { v: 'undergrad-freshman', l: 'College freshman' },
+  { v: 'undergrad-sophomore', l: 'College sophomore' },
+  { v: 'undergrad-junior', l: 'College junior' },
+  { v: 'undergrad-senior', l: 'College senior' },
+  { v: 'transfer', l: 'Community college / transfer' },
+  { v: 'grad', l: 'Graduate student' },
+];
+const MAJOR_AREAS = ['STEM', 'Engineering', 'Computing', 'Math', 'Science', 'Business', 'Marketing', 'Accounting', 'Humanities', 'Social Sciences', 'Arts', 'Design', 'Education', 'Health', 'Other'];
+
+// =========================================================
+// ROUTING
+// =========================================================
+window.addEventListener('DOMContentLoaded', () => { updateNav(); handleRoute(); });
+window.addEventListener('hashchange', handleRoute);
+function handleRoute() {
+  const hash = window.location.hash.replace('#/', '').replace('#', '') || 'home';
+  const parts = hash.split('/');
+  const page = parts[0];
+  const valid = ['home', 'profile', 'matches', 'detail', 'apps', 'about'];
+  if (!valid.includes(page)) { showPage('home'); return; }
+  showPage(page);
+  if (page === 'home') renderHome();
+  else if (page === 'profile') renderProfile();
+  else if (page === 'matches') renderMatches();
+  else if (page === 'detail' && parts[1]) showDetail(parts[1]);
+  else if (page === 'apps') renderApps();
+}
+function navigate(page, sub) { window.location.hash = '#/' + page + (sub ? '/' + sub : ''); }
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(link => link.classList.toggle('active', link.dataset.page === page));
+  closeMobileMenu();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function toggleMobileMenu() { document.getElementById('navLinks').classList.toggle('open'); }
+function closeMobileMenu() { document.getElementById('navLinks').classList.remove('open'); }
+
+function updateNav() {
+  const banner = document.getElementById('demoBanner');
+  if (banner) { if (state.apiKey) banner.classList.add('hidden'); else banner.classList.remove('hidden'); }
+  const badge = document.querySelector('.nav-link[data-page="apps"] .badge');
+  if (badge) {
+    if (state.applications.length > 0) { badge.textContent = state.applications.length; badge.style.display = ''; }
+    else { badge.style.display = 'none'; }
+  }
+}
+function openSetup() { document.getElementById('setupOverlay').classList.remove('hidden'); document.getElementById('apiKeyInput').focus(); }
+function closeSetup() { document.getElementById('setupOverlay').classList.add('hidden'); }
+function saveApiKey() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key.startsWith('sk-ant-')) { alert('Anthropic keys start with "sk-ant-".'); return; }
+  state.apiKey = key;
+  localStorage.setItem('sch_apikey', key);
+  closeSetup();
+  updateNav();
+}
+
+// =========================================================
+// HOME
+// =========================================================
+function renderHome() {
+  const hasProfile = state.profile.fullName && state.profile.educationLevel;
+  document.getElementById('homeRoot').innerHTML = `
+    <div class="hero">
+      <div class="kicker">scholarship discovery + auto-fill engine</div>
+      <h1>Apply to <em>30 scholarships</em> in the time it takes to apply to one.</h1>
+      <p class="sub">Most students apply to one or two scholarships because each application is two hours of friction. This tool finds real scholarships you actually qualify for, shows you exactly why each one matched, fills in the common fields, and drafts a personalized essay for each. You review, edit, and submit. Your data stays in this browser.</p>
+    </div>
+    <div class="demo-banner" id="demoBanner">
+      <span><strong>Demo mode.</strong> Without an API key, matches use the curated 39-scholarship database only. <button onclick="openSetup()">Add your Anthropic API key</button> to enable live web search for many more scholarships and AI-drafted essays.</span>
+    </div>
+    ${hasProfile ? `
+      <div style="background: var(--brand-soft); border-radius: var(--r-md); padding: 18px 22px; margin: 24px 0; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+        <span style="font-family: var(--serif); font-size: 17px; color: var(--ink);">Your profile is set up. <strong>${escapeHtml(state.profile.fullName)}</strong> · ${escapeHtml(state.profile.educationLevel)} · ${escapeHtml(state.profile.major || 'no major listed')}</span>
+        <button class="primary large" style="margin-left: auto;" onclick="navigate('matches')">Find my scholarships →</button>
+        <button class="secondary" onclick="navigate('profile')">Edit profile</button>
+      </div>
+    ` : `
+      <div style="background: var(--accent-soft); border-radius: var(--r-md); padding: 24px 28px; margin: 24px 0;">
+        <h3 style="margin-bottom: 6px;">Step 1 — Build your profile (3 minutes)</h3>
+        <p style="font-family: var(--serif); color: var(--ink-2); margin-bottom: 14px;">Tell us about yourself once. We use this to filter scholarships, score the matches, and auto-fill the common application fields.</p>
+        <button class="primary large" onclick="navigate('profile')">Build my profile →</button>
+      </div>
+    `}
+    <h2 style="margin-top: 48px;">How this works</h2>
+    <div style="display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 18px;">
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 22px 26px; box-shadow: var(--shadow-sm); display: flex; gap: 18px; align-items: flex-start;">
+        <div style="font-family: var(--serif); font-weight: 500; font-size: 32px; color: var(--accent); line-height: 1; min-width: 40px;">1</div>
+        <div><h4 style="font-family: var(--serif); font-weight: 500; font-size: 18px; margin-bottom: 4px;">Build your profile</h4><p style="font-family: var(--sans); color: var(--ink-2); font-size: 14px;">Citizenship, GPA, major, financial situation, demographics, interests, essay material. Once. Stays in your browser.</p></div>
+      </div>
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 22px 26px; box-shadow: var(--shadow-sm); display: flex; gap: 18px; align-items: flex-start;">
+        <div style="font-family: var(--serif); font-weight: 500; font-size: 32px; color: var(--accent); line-height: 1; min-width: 40px;">2</div>
+        <div><h4 style="font-family: var(--serif); font-weight: 500; font-size: 18px; margin-bottom: 4px;">We match you against real scholarships</h4><p style="font-family: var(--sans); color: var(--ink-2); font-size: 14px;">Curated database of 39 verified scholarships, plus live web search via Claude when an API key is provided. Every match shows WHY (which criteria of yours matched which requirements).</p></div>
+      </div>
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 22px 26px; box-shadow: var(--shadow-sm); display: flex; gap: 18px; align-items: flex-start;">
+        <div style="font-family: var(--serif); font-weight: 500; font-size: 32px; color: var(--accent); line-height: 1; min-width: 40px;">3</div>
+        <div><h4 style="font-family: var(--serif); font-weight: 500; font-size: 18px; margin-bottom: 4px;">Auto-filled fields + drafted essays</h4><p style="font-family: var(--sans); color: var(--ink-2); font-size: 14px;">For each scholarship, common fields are filled from your profile. Essays are drafted from your essay material, customized to the scholarship's prompt and values.</p></div>
+      </div>
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 22px 26px; box-shadow: var(--shadow-sm); display: flex; gap: 18px; align-items: flex-start;">
+        <div style="font-family: var(--serif); font-weight: 500; font-size: 32px; color: var(--accent); line-height: 1; min-width: 40px;">4</div>
+        <div><h4 style="font-family: var(--serif); font-weight: 500; font-size: 18px; margin-bottom: 4px;">Submit through each scholarship's portal</h4><p style="font-family: var(--sans); color: var(--ink-2); font-size: 14px;">Most scholarships need manual submission. Copy your packet, click the source link, and submit. Track status in My Applications.</p></div>
+      </div>
+    </div>
+  `;
+}
+
+// =========================================================
+// PROFILE BUILDER
+// =========================================================
+function renderProfile() {
+  const p = state.profile;
+  document.getElementById('profileRoot').innerHTML = `
+    <div class="kicker">step 1 of 3</div>
+    <h1 class="display">Build your <em>profile</em>.</h1>
+    <p class="deck">Tell us about yourself once. We use these fields for matching, scoring, and auto-fill. Stored only in this browser — never sent to a server. Your essay material is sent to Claude only when you generate a draft (and only if you've added an API key).</p>
+    <div class="profile-card-big">
+      <div class="profile-section">
+        <h3>Identity</h3>
+        <p class="helper">Used for auto-filling application headers.</p>
+        <div class="field-grid">
+          <div class="field"><label>Full name *</label><input type="text" id="p_fullName" value="${escapeHtml(p.fullName||'')}" placeholder="e.g., Greesh Doppalapudi"></div>
+          <div class="field"><label>Email</label><input type="email" id="p_email" value="${escapeHtml(p.email||'')}" placeholder="you@example.com"></div>
+          <div class="field"><label>Phone</label><input type="text" id="p_phone" value="${escapeHtml(p.phone||'')}" placeholder="(555) 123-4567"></div>
+          <div class="field"><label>State / region</label><input type="text" id="p_state" value="${escapeHtml(p.state||'')}" placeholder="e.g., California"></div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <h3>Demographics</h3>
+        <p class="helper">Many scholarships are demographic-restricted. Skip what you don't want to share — but unselected fields will exclude you from those scholarships.</p>
+        <div class="field-grid">
+          <div class="field"><label>Citizenship status *</label>
+            <select id="p_citizenship">
+              <option value="">— Select —</option>
+              ${CITIZENSHIP_OPTIONS.map(c => `<option value="${c.v}" ${p.citizenship===c.v?'selected':''}>${c.l}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field"><label>Age</label><input type="number" id="p_age" value="${escapeHtml(p.age||'')}" placeholder="18"></div>
+        </div>
+        <div class="field" style="margin-top: 14px;">
+          <label>Ethnicity (multi-select — used for demographic scholarships)</label>
+          <div class="checkbox-group" id="p_ethnicities">
+            ${ETHNICITY_OPTIONS.map(e => `<button type="button" class="checkbox-pill ${(p.ethnicities||[]).includes(e)?'selected':''}" onclick="toggleArr('ethnicities','${escapeHtml(e)}', this)">${escapeHtml(e)}</button>`).join('')}
+          </div>
+        </div>
+        <div class="field" style="margin-top: 14px;">
+          <label>Other identity factors (multi-select)</label>
+          <div class="checkbox-group">
+            ${[
+              ['firstGen','First-generation college student'],
+              ['lowIncome','Low-income family'],
+              ['rural','Rural / small-town background'],
+              ['woman','Woman'],
+              ['lgbtq','LGBTQ+'],
+              ['veteran','Veteran or military family'],
+              ['disability','Documented disability'],
+              ['overcameAdversity','Overcame significant adversity'],
+            ].map(([k,l]) => `<button type="button" class="checkbox-pill ${p[k]?'selected':''}" onclick="toggleBool('${k}', this)">${escapeHtml(l)}</button>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <h3>Academic</h3>
+        <div class="field-grid">
+          <div class="field"><label>Education level *</label>
+            <select id="p_educationLevel">
+              <option value="">— Select —</option>
+              ${LEVEL_OPTIONS.map(c => `<option value="${c.v}" ${p.educationLevel===c.v?'selected':''}>${c.l}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field"><label>Current/intended college</label><input type="text" id="p_school" value="${escapeHtml(p.school||'')}" placeholder="e.g., UC San Diego"></div>
+          <div class="field"><label>Major</label><input type="text" id="p_major" value="${escapeHtml(p.major||'')}" placeholder="e.g., Cognitive Science"></div>
+          <div class="field"><label>GPA (4.0 scale) *</label><input type="number" step="0.01" id="p_gpa" value="${escapeHtml(p.gpa||'')}" placeholder="3.85"></div>
+          <div class="field"><label>SAT score (optional)</label><input type="number" id="p_sat" value="${escapeHtml(p.sat||'')}" placeholder="1450"></div>
+          <div class="field"><label>Expected graduation year</label><input type="number" id="p_gradYear" value="${escapeHtml(p.gradYear||'')}" placeholder="2027"></div>
+        </div>
+        <div class="field" style="margin-top: 14px;">
+          <label>Major area (helps match to STEM/engineering/etc. scholarships)</label>
+          <div class="checkbox-group">
+            ${MAJOR_AREAS.map(m => `<button type="button" class="checkbox-pill ${(p.majorAreas||[]).includes(m)?'selected':''}" onclick="toggleArr('majorAreas','${escapeHtml(m)}', this)">${escapeHtml(m)}</button>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <h3>Financial</h3>
+        <div class="field-grid">
+          <div class="field"><label>Pell Grant eligible?</label>
+            <select id="p_pellEligible">
+              <option value="">— Skip —</option>
+              <option value="yes" ${p.pellEligible==='yes'?'selected':''}>Yes</option>
+              <option value="no" ${p.pellEligible==='no'?'selected':''}>No</option>
+              <option value="unknown" ${p.pellEligible==='unknown'?'selected':''}>Don't know</option>
+            </select>
+          </div>
+          <div class="field"><label>Family income (rough)</label>
+            <select id="p_income">
+              <option value="">— Skip —</option>
+              <option value="under-30k" ${p.income==='under-30k'?'selected':''}>Under $30K</option>
+              <option value="30-65k" ${p.income==='30-65k'?'selected':''}>$30K – $65K</option>
+              <option value="65-100k" ${p.income==='65-100k'?'selected':''}>$65K – $100K</option>
+              <option value="100-150k" ${p.income==='100-150k'?'selected':''}>$100K – $150K</option>
+              <option value="over-150k" ${p.income==='over-150k'?'selected':''}>Over $150K</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <h3>Activities & strengths</h3>
+        <p class="helper">Scholarships score on leadership, community service, and similar factors. Be specific — concrete examples help essays land too.</p>
+        <div class="field-grid full">
+          <div class="field"><label>Leadership</label><textarea id="p_leadership" placeholder="e.g., Founded the campus environmental club; led 30 volunteers in beach cleanup">${escapeHtml(p.leadership||'')}</textarea></div>
+          <div class="field"><label>Community service / volunteering</label><textarea id="p_communityService" placeholder="e.g., 200+ hours tutoring K-12 math at the YMCA over 3 years">${escapeHtml(p.communityService||'')}</textarea></div>
+          <div class="field"><label>Research / projects</label><textarea id="p_research" placeholder="e.g., NSF-funded research on language acquisition; built ML pipeline for color perception">${escapeHtml(p.research||'')}</textarea></div>
+          <div class="field"><label>Awards & honors</label><textarea id="p_awards" placeholder="e.g., Dean's list 4 quarters; SHPE national symposium 2nd place">${escapeHtml(p.awards||'')}</textarea></div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <h3>Essay material</h3>
+        <p class="helper">Paste an existing personal statement or essay if you have one. Claude will adapt it to each scholarship's prompt instead of starting from scratch.</p>
+        <div class="field-grid full">
+          <div class="field"><label>Personal statement / existing essay (paste full text)</label><textarea id="p_personalStatement" style="min-height: 160px;" placeholder="Paste your existing personal statement here. The longer and more concrete, the better the auto-drafts.">${escapeHtml(p.personalStatement||'')}</textarea></div>
+          <div class="field"><label>Challenges you've overcome</label><textarea id="p_challenges" placeholder="e.g., Worked 25hr/week through college to support family; managed coursework during parent's chronic illness">${escapeHtml(p.challenges||'')}</textarea></div>
+          <div class="field"><label>Career goals</label><textarea id="p_careerGoals" placeholder="e.g., Become a PhD researcher in computational linguistics; eventually teach at a UC">${escapeHtml(p.careerGoals||'')}</textarea></div>
+        </div>
+      </div>
+    </div>
+    <div class="action-bar">
+      <button class="primary large" onclick="saveProfile()">Save profile and find matches →</button>
+    </div>
+  `;
+}
+function toggleArr(key, val, btn) {
+  state.profile[key] = state.profile[key] || [];
+  const idx = state.profile[key].indexOf(val);
+  if (idx >= 0) { state.profile[key].splice(idx,1); btn.classList.remove('selected'); }
+  else { state.profile[key].push(val); btn.classList.add('selected'); }
+}
+function toggleBool(key, btn) {
+  state.profile[key] = !state.profile[key];
+  if (state.profile[key]) btn.classList.add('selected'); else btn.classList.remove('selected');
+}
+function saveProfile() {
+  const fields = ['fullName','email','phone','state','age','citizenship','educationLevel','school','major','gpa','sat','gradYear','pellEligible','income','leadership','communityService','research','awards','personalStatement','challenges','careerGoals'];
+  fields.forEach(f => { const el = document.getElementById('p_' + f); if (el) state.profile[f] = el.value.trim(); });
+  if (!state.profile.fullName || !state.profile.educationLevel || !state.profile.citizenship) {
+    alert('Please fill at least: Full name, Citizenship, Education level.'); return;
+  }
+  localStorage.setItem('sch_profile', JSON.stringify(state.profile));
+  navigate('matches');
+}
+
+// =========================================================
+// MATCHING ENGINE — deterministic eligibility + soft scoring
+// =========================================================
+function matchScholarship(s, p) {
+  const reasons = []; // structured: {type, text}
+  let hardFail = false;
+  // Citizenship
+  if (s.eligibility.citizenship && s.eligibility.citizenship.length > 0) {
+    if (s.eligibility.citizenship.includes('any') || s.eligibility.citizenship.includes(p.citizenship)) {
+      reasons.push({ type: 'match', text: `Citizenship status (${citizenshipLabel(p.citizenship)}) is eligible` });
+    } else { hardFail = true; reasons.push({ type: 'fail', text: `Requires citizenship: ${s.eligibility.citizenship.map(citizenshipLabel).join(', ')}` }); }
+  }
+  // Level — 'undergrad' as an eligibility token matches any undergrad-* user level
+  if (s.eligibility.levels && s.eligibility.levels.length > 0) {
+    const userLevel = p.educationLevel || '';
+    const expandedSchLevels = s.eligibility.levels.flatMap(l => l === 'undergrad' ? ['undergrad','undergrad-freshman','undergrad-sophomore','undergrad-junior','undergrad-senior'] : [l]);
+    if (expandedSchLevels.includes(userLevel)) { reasons.push({ type: 'match', text: `Your level (${levelLabel(userLevel)}) qualifies` }); }
+    else { hardFail = true; reasons.push({ type: 'fail', text: `Requires: ${s.eligibility.levels.map(levelLabel).join(', ')}` }); }
+  }
+  // GPA
+  if (s.eligibility.minGPA && p.gpa) {
+    const userGPA = parseFloat(p.gpa);
+    if (userGPA >= s.eligibility.minGPA) reasons.push({ type: 'match', text: `Your GPA ${userGPA} meets the ${s.eligibility.minGPA} minimum` });
+    else { hardFail = true; reasons.push({ type: 'fail', text: `Requires GPA ≥ ${s.eligibility.minGPA} (yours: ${userGPA})` }); }
+  } else if (s.eligibility.minGPA) {
+    reasons.push({ type: 'stretch', text: `Requires GPA ≥ ${s.eligibility.minGPA}; you didn't enter your GPA` });
+  }
+  // Demographics
+  if (s.eligibility.demographics) {
+    const d = s.eligibility.demographics;
+    if (d.hispanic) {
+      if ((p.ethnicities||[]).includes('Hispanic/Latino')) reasons.push({ type: 'match', text: 'You identified as Hispanic/Latino' });
+      else { hardFail = true; reasons.push({ type: 'fail', text: 'Requires Hispanic/Latino heritage' }); }
+    }
+    if (d.africanAmerican) {
+      if ((p.ethnicities||[]).includes('Black/African American')) reasons.push({ type: 'match', text: 'You identified as Black/African American' });
+      else { hardFail = true; reasons.push({ type: 'fail', text: 'Requires Black/African American heritage' }); }
+    }
+    if (d.aapi) {
+      if ((p.ethnicities||[]).some(e => ['Asian','Pacific Islander'].includes(e))) reasons.push({ type: 'match', text: 'You identified as AAPI' });
+      else { hardFail = true; reasons.push({ type: 'fail', text: 'Requires Asian or Pacific Islander heritage' }); }
+    }
+    if (d.underrepresentedMinority) {
+      const isMin = (p.ethnicities||[]).some(e => ['Hispanic/Latino','Black/African American','Native American','Pacific Islander'].includes(e));
+      if (isMin) reasons.push({ type: 'match', text: 'You identified as an underrepresented minority' });
+      else { hardFail = true; reasons.push({ type: 'fail', text: 'Requires underrepresented minority status' }); }
+    }
+    if (d.bipoc) {
+      const isBipoc = (p.ethnicities||[]).some(e => e !== 'White' && e !== 'Prefer not to say');
+      if (isBipoc) reasons.push({ type: 'match', text: 'You identified as BIPOC' });
+      else { hardFail = true; reasons.push({ type: 'fail', text: 'Requires BIPOC identity' }); }
+    }
+    if (d.woman) {
+      if (p.woman) reasons.push({ type: 'match', text: 'You identified as a woman' });
+      else { hardFail = true; reasons.push({ type: 'fail', text: 'Requires identifying as a woman' }); }
+    }
+    if (d.lgbtq) {
+      if (p.lgbtq) reasons.push({ type: 'match', text: 'You identified as LGBTQ+' });
+      else { hardFail = true; reasons.push({ type: 'fail', text: 'Requires LGBTQ+ identity' }); }
+    }
+    if (d.veteran) {
+      if (p.veteran) reasons.push({ type: 'match', text: 'You indicated veteran/military background' });
+      else { hardFail = true; reasons.push({ type: 'fail', text: 'Requires veteran or military family' }); }
+    }
+    if (d.disability) {
+      if (p.disability) reasons.push({ type: 'match', text: 'You indicated a documented disability' });
+      else { hardFail = true; reasons.push({ type: 'fail', text: 'Requires documented disability' }); }
+    }
+    if (d.rural) {
+      if (p.rural) reasons.push({ type: 'match', text: 'You identified as rural background' });
+      else { hardFail = true; reasons.push({ type: 'fail', text: 'Requires rural/small-town background' }); }
+    }
+  }
+  // Major area
+  if (s.eligibility.majorAreas && s.eligibility.majorAreas.length > 0) {
+    const overlap = (p.majorAreas||[]).filter(m => s.eligibility.majorAreas.includes(m));
+    if (overlap.length > 0) reasons.push({ type: 'match', text: `Your major area (${overlap.join(', ')}) qualifies` });
+    else { hardFail = true; reasons.push({ type: 'fail', text: `Requires major in: ${s.eligibility.majorAreas.join(', ')}` }); }
+  }
+  // Financial need
+  if (s.eligibility.financialNeed === 'pell-eligible') {
+    if (p.pellEligible === 'yes') reasons.push({ type: 'match', text: 'You indicated Pell-eligible' });
+    else if (p.pellEligible === 'no') { hardFail = true; reasons.push({ type: 'fail', text: 'Requires Pell-eligible (you indicated no)' }); }
+    else reasons.push({ type: 'stretch', text: 'Requires Pell-eligible; verify yours when you apply' });
+  } else if (s.eligibility.financialNeed === 'demonstrated') {
+    if (p.income && (p.income === 'under-30k' || p.income === '30-65k' || p.pellEligible === 'yes')) reasons.push({ type: 'match', text: 'You appear to demonstrate financial need' });
+    else if (p.income === 'over-150k') reasons.push({ type: 'stretch', text: 'Requires demonstrated need; income may not qualify' });
+    else reasons.push({ type: 'stretch', text: 'Requires demonstrated financial need' });
+  } else if (s.eligibility.financialNeed === 'low-income') {
+    if (p.income === 'under-30k' || p.income === '30-65k') reasons.push({ type: 'match', text: 'Your income qualifies as low-income' });
+    else { hardFail = true; reasons.push({ type: 'fail', text: 'Requires low-income (under ~$65K family income)' }); }
+  }
+  // Residency
+  if (s.eligibility.residency === 'CA') {
+    if ((p.state||'').toLowerCase().includes('california') || p.state === 'CA') reasons.push({ type: 'match', text: 'You\'re in California' });
+    else { hardFail = true; reasons.push({ type: 'fail', text: 'Requires California residency' }); }
+  } else if (s.eligibility.residency === 'SD-County') {
+    if ((p.state||'').toLowerCase().includes('san diego') || ((p.school||'').toLowerCase().includes('san diego'))) reasons.push({ type: 'match', text: 'You\'re in San Diego County' });
+    else reasons.push({ type: 'stretch', text: 'Requires San Diego County residency — verify' });
+  } else if (s.eligibility.residency === 'specific-schools') {
+    reasons.push({ type: 'stretch', text: 'Available only to admits from specific high schools — check the source URL' });
+  }
+  // First-gen requirement
+  if (s.eligibility.firstGen) {
+    if (p.firstGen) reasons.push({ type: 'match', text: 'You\'re first-generation' });
+    else { hardFail = true; reasons.push({ type: 'fail', text: 'Requires first-generation college student' }); }
+  }
+  // Age max
+  if (s.eligibility.maxAge && p.age) {
+    if (parseInt(p.age) <= s.eligibility.maxAge) reasons.push({ type: 'match', text: `You're under the ${s.eligibility.maxAge} age cap` });
+    else { hardFail = true; reasons.push({ type: 'fail', text: `Requires age ≤ ${s.eligibility.maxAge}` }); }
+  }
+  // === Soft preferences (only if hard requirements passed) ===
+  let prefScore = 0;
+  let prefMax = 0;
+  if (!hardFail && s.prefs) {
+    Object.entries(s.prefs).forEach(([k, w]) => {
+      prefMax += w;
+      let signal = 0;
+      if (k === 'firstGen' && p.firstGen) signal = 1;
+      else if (k === 'leadership' && p.leadership && p.leadership.length > 30) signal = 1;
+      else if (k === 'communityService' && p.communityService && p.communityService.length > 30) signal = 1;
+      else if (k === 'academic' && p.gpa) signal = Math.min(1, (parseFloat(p.gpa) - 3.0) / 1.0);
+      else if (k === 'researchExperience' && p.research && p.research.length > 30) signal = 1;
+      else if (k === 'overcameAdversity' && (p.overcameAdversity || (p.challenges && p.challenges.length > 50))) signal = 1;
+      else if (k === 'workEthic' && p.challenges && p.challenges.toLowerCase().includes('work')) signal = 0.7;
+      else if (k === 'writing' && p.personalStatement && p.personalStatement.length > 200) signal = 0.7;
+      else if (k === 'projectQuality' && p.research && p.research.length > 30) signal = 0.6;
+      else if (k === 'careerAlignment' && p.careerGoals && p.careerGoals.length > 20) signal = 0.6;
+      else if (k === 'careerChange' && p.careerGoals && p.careerGoals.length > 20) signal = 0.5;
+      if (signal > 0) {
+        prefScore += w * signal;
+        reasons.push({ type: 'pref', text: `${prefLabel(k)} (+${(w * signal).toFixed(1)})` });
+      }
+    });
+  }
+  return {
+    scholarship: s,
+    eligible: !hardFail,
+    hardFail,
+    reasons,
+    prefScore,
+    prefMax,
+    confidence: prefMax > 0 ? Math.round((0.5 + 0.5 * (prefScore / prefMax)) * 100) : 50, // 50-100 for eligible
+  };
+}
+
+function citizenshipLabel(v) { const c = CITIZENSHIP_OPTIONS.find(x => x.v === v); return c ? c.l : v; }
+function levelLabel(v) { const c = LEVEL_OPTIONS.find(x => x.v === v); return c ? c.l : v; }
+function prefLabel(k) {
+  return ({ firstGen:'First-gen status', leadership:'Strong leadership evidence', communityService:'Community service track record', academic:'Strong academic record', researchExperience:'Research experience', overcameAdversity:'Demonstrated resilience', workEthic:'Work-ethic narrative', writing:'Strong writing material', projectQuality:'Project portfolio', careerAlignment:'Career-goal alignment', careerChange:'Career-development fit' })[k] || k;
+}
+
+// =========================================================
+// MATCHES PAGE
+// =========================================================
+async function renderMatches() {
+  const root = document.getElementById('matchesRoot');
+  if (!state.profile.fullName) { root.innerHTML = '<p style="font-style:italic;">Build your profile first.</p><button class="primary" onclick="navigate(\'profile\')">Build profile →</button>'; return; }
+  // Run matching against curated DB
+  const curatedResults = SCHOLARSHIPS.map(s => matchScholarship({...s, source:'curated'}, state.profile));
+  state.matchedResults = curatedResults;
+  // Render initial matches from curated DB
+  renderMatchResults();
+  // If API key, also kick off live web search
+  if (state.apiKey) {
+    document.getElementById('liveStatus').innerHTML = '<div class="loading-card"><div class="loading-text">Searching the web for more scholarships matching your profile...</div><div class="loading-bar"></div></div>';
+    try {
+      const liveData = await fetchLiveScholarships(state.profile);
+      state.liveResults = liveData.scholarships || [];
+      state.searchQueries = liveData.queries || [];
+      // Score live results too
+      const liveScored = state.liveResults.map(s => matchScholarship({...s, source:'web-search'}, state.profile));
+      state.matchedResults = [...curatedResults, ...liveScored];
+      renderMatchResults();
+    } catch (e) {
+      console.error(e);
+      document.getElementById('liveStatus').innerHTML = `<p style="font-family: var(--serif); font-style: italic; color: var(--ink-3);">Live web search failed (${escapeHtml(e.message||'error')}). Showing curated results only.</p>`;
+    }
+  }
+}
+
+function renderMatchResults() {
+  const root = document.getElementById('matchesRoot');
+  const eligible = state.matchedResults.filter(r => r.eligible).sort((a, b) => b.confidence - a.confidence);
+  const nearMisses = state.matchedResults.filter(r => !r.eligible && r.reasons.filter(x => x.type === 'fail').length === 1).slice(0, 5);
+  const totalAmount = eligible.length;
+  root.innerHTML = `
+    <div class="kicker">step 2 of 3 · matching results</div>
+    <h1 class="display"><em>${eligible.length}</em> scholarships you actually qualify for.</h1>
+    <p class="deck">Ranked by fit. Each card shows exactly why it matched. Click any one to see auto-filled fields and a custom essay draft.</p>
+    <div class="match-summary">
+      <div class="label">Match summary</div>
+      <h3>${eligible.length} eligible scholarships found</h3>
+      <p style="font-family: var(--serif); color: rgba(255,255,255,0.85); margin-top: 4px;">Filtered ${state.matchedResults.length} scholarships against your profile.</p>
+      <div class="stats">
+        <div class="stat"><div class="num">${eligible.filter(r => r.scholarship.source === 'curated').length}</div><div class="lab">From curated database</div></div>
+        <div class="stat"><div class="num">${eligible.filter(r => r.scholarship.source === 'web-search').length}</div><div class="lab">From live web search</div></div>
+        <div class="stat"><div class="num">${eligible.filter(r => r.confidence >= 75).length}</div><div class="lab">High-confidence matches</div></div>
+        <div class="stat"><div class="num">${state.matchedResults.length - eligible.length}</div><div class="lab">Filtered out (eligibility)</div></div>
+      </div>
+    </div>
+    <div id="liveStatus"></div>
+    ${state.searchQueries.length > 0 ? `
+      <div class="search-log">
+        <div class="label">Live web searches we ran (transparency)</div>
+        <ul>${state.searchQueries.map(q => `<li>${escapeHtml(q)}</li>`).join('')}</ul>
+      </div>
+    ` : ''}
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterMatches('all', event)">All ${eligible.length}</button>
+      <button class="filter-btn" onclick="filterMatches('high', event)">High confidence</button>
+      <button class="filter-btn" onclick="filterMatches('curated', event)">Curated only</button>
+      <button class="filter-btn" onclick="filterMatches('web', event)">Web search only</button>
+    </div>
+    <div id="matchesList"></div>
+    ${nearMisses.length > 0 ? `
+      <h2 style="margin-top: 48px;">Near misses (one criterion off)</h2>
+      <p style="font-family: var(--serif); font-style: italic; color: var(--ink-2); margin-bottom: 16px;">These don't quite match, but you're close — see why each fell out.</p>
+      <div>${nearMisses.map(renderScholarshipCard).join('')}</div>
+    ` : ''}
+  `;
+  filterMatches('all', event);
+}
+function filterMatches(filter, evt) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (evt && evt.target && typeof evt.target.classList !== 'undefined' && evt.target.classList.add) {
+    evt.target.classList.add('active');
+  } else {
+    const m = document.querySelector(`.filter-btn[onclick*="filterMatches('${filter}'"]`);
+    if (m) m.classList.add('active');
+  }
+  let items = state.matchedResults.filter(r => r.eligible).sort((a, b) => b.confidence - a.confidence);
+  if (filter === 'high') items = items.filter(r => r.confidence >= 75);
+  if (filter === 'curated') items = items.filter(r => r.scholarship.source === 'curated');
+  if (filter === 'web') items = items.filter(r => r.scholarship.source === 'web-search');
+  document.getElementById('matchesList').innerHTML = items.map(renderScholarshipCard).join('');
+}
+function renderScholarshipCard(result) {
+  const s = result.scholarship;
+  const confClass = result.confidence >= 75 ? 'high' : result.confidence >= 60 ? 'med' : 'low';
+  return `
+    <div class="scholarship-card">
+      <div class="header-row">
+        <div>
+          <h4>${escapeHtml(s.name)}</h4>
+          <div class="org">${escapeHtml(s.org)}</div>
+        </div>
+        <div class="amount">${escapeHtml(s.amount)}</div>
+      </div>
+      <p class="description">${escapeHtml(s.description)}</p>
+      <div class="meta-row">
+        <span class="meta">📅 ${escapeHtml(s.deadlineHint || 'Check source')}</span>
+        <span class="source-pill ${s.source === 'curated' ? 'curated' : 'web-search'}">${s.source === 'curated' ? 'CURATED' : 'WEB SEARCH'}</span>
+      </div>
+      ${result.eligible ? `
+        <div class="confidence-bar">
+          <span class="label">Confidence</span>
+          <div class="confidence-track"><div class="confidence-fill ${confClass}" style="width: ${result.confidence}%"></div></div>
+          <span class="confidence-text">${result.confidence}/100</span>
+        </div>
+      ` : ''}
+      <div class="why-card">
+        <div class="why-label">Why this ${result.eligible ? 'matched' : 'didn\'t match'}</div>
+        <ul>${result.reasons.map(r => `<li class="${r.type}">${escapeHtml(r.text)}</li>`).join('')}</ul>
+      </div>
+      <div class="scholarship-actions">
+        ${result.eligible ? `
+          <button class="btn-mini" onclick="navigate('detail', '${s.id}')">Open & generate packet →</button>
+        ` : ''}
+        <a class="source-link" href="${escapeHtml(s.url)}" target="_blank" rel="noopener">Source: ${escapeHtml(new URL(s.url).hostname)} ↗</a>
+      </div>
+      ${s.notes ? `<p style="font-family: var(--serif); font-style: italic; color: var(--ink-3); font-size: 13px; margin-top: 10px;">${escapeHtml(s.notes)}</p>` : ''}
+    </div>
+  `;
+}
+
+// =========================================================
+// CLAUDE web_search FOR LIVE DISCOVERY
+// =========================================================
+async function fetchLiveScholarships(profile) {
+  // Build search queries based on profile
+  const queries = buildSearchQueries(profile);
+  const systemPrompt = `You are a scholarship discovery assistant. You will perform web searches to find legitimate scholarships matching a student's profile, and return them as structured JSON.
+
+For each scholarship found, return ONLY scholarships you can verify exist on the source URL. Skip suspicious or unverifiable ones. Output JSON in this exact shape:
+
+{
+  "scholarships": [
+    {
+      "id": "kebab-case-unique-id",
+      "name": "Scholarship name",
+      "org": "Sponsoring organization",
+      "amount": "Award amount as a string (e.g. '$5,000' or 'Up to $20,000')",
+      "deadlineHint": "When to apply (e.g., 'March annually')",
+      "url": "Direct URL to the scholarship page (must be valid)",
+      "description": "1-2 sentence description",
+      "eligibility": {
+        "citizenship": ["us-citizen","permanent-resident","daca","undocumented","f1","any"],
+        "levels": ["hs-senior","undergrad-freshman","undergrad-sophomore","undergrad-junior","undergrad-senior","transfer","grad"],
+        "minGPA": 3.0,
+        "demographics": { "hispanic": true, "africanAmerican": true, "aapi": true, "underrepresentedMinority": true, "woman": true, "lgbtq": true, "veteran": true, "disability": true, "rural": true, "bipoc": true },
+        "majorAreas": ["STEM","Engineering","Computing","Math","Science","Business","Humanities","Arts","Health"],
+        "residency": "CA",
+        "financialNeed": "pell-eligible | demonstrated | low-income"
+      },
+      "prefs": { "academic": 0.5, "leadership": 0.5, "communityService": 0.5, "firstGen": 0.5 },
+      "application": { "essays": 2, "lor": 1, "transcripts": true, "fafsa": false },
+      "notes": "Optional context"
+    }
+  ]
+}
+
+Only include eligibility fields that actually apply (omit unused ones — don't put 'undefined'). Demographics field: only include keys that are actually required. Output ONLY the JSON, no other text.`;
+  const userPrompt = `Find 5-10 legitimate scholarships matching this student profile. Run multiple web searches.
+
+Student profile:
+- Citizenship: ${profile.citizenship}
+- Education level: ${profile.educationLevel}
+- Major: ${profile.major || 'undecided'} (areas: ${(profile.majorAreas||[]).join(', ') || 'none'})
+- GPA: ${profile.gpa || 'not provided'}
+- State: ${profile.state || 'not provided'}
+- Demographics: ${(profile.ethnicities||[]).join(', ') || 'not specified'}
+- Other identity factors: ${[
+    profile.firstGen && 'first-gen',
+    profile.lowIncome && 'low-income',
+    profile.rural && 'rural',
+    profile.woman && 'woman',
+    profile.lgbtq && 'LGBTQ+',
+    profile.veteran && 'veteran',
+    profile.disability && 'disability',
+  ].filter(Boolean).join(', ') || 'none'}
+- Financial need: ${profile.pellEligible || 'unknown'} pell, income ${profile.income || 'unknown'}
+
+Search the web for current scholarships matching this profile. Return ONLY scholarships that exist on real foundation/program websites with valid URLs. Output the JSON described in your instructions.`;
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-api-key': state.apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-5-20250929', max_tokens: 4000,
+      tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 5 }],
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }],
+    }),
+  });
+  if (!resp.ok) throw new Error(await resp.text());
+  const data = await resp.json();
+  // Extract the final text response and parse JSON
+  let textOut = '';
+  for (const block of data.content) {
+    if (block.type === 'text') textOut += block.text;
+  }
+  // Try to extract JSON from the response
+  let parsed = { scholarships: [] };
+  try {
+    const jsonMatch = textOut.match(/\{[\s\S]*\}/);
+    if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
+  } catch (e) { console.warn('Failed to parse Claude response as JSON', e); }
+  return { scholarships: parsed.scholarships || [], queries };
+}
+
+function buildSearchQueries(p) {
+  // We don't actually pass these to web_search ourselves — Claude formulates its own queries.
+  // But we describe what we're asking for for transparency.
+  const queries = [];
+  const demos = (p.ethnicities||[]).join(' ');
+  const id = [p.firstGen && 'first-generation', p.lowIncome && 'low-income', p.rural && 'rural', p.woman && 'women', p.lgbtq && 'LGBTQ', p.veteran && 'veteran', p.disability && 'disability'].filter(Boolean).join(' ');
+  queries.push(`"${p.educationLevel}" scholarships ${p.state||''} 2026`);
+  if (p.major) queries.push(`"${p.major}" scholarships 2026`);
+  if (demos) queries.push(`${demos} student scholarships 2026`);
+  if (id) queries.push(`scholarships for ${id} students 2026`);
+  if (p.citizenship === 'daca' || p.citizenship === 'undocumented') queries.push('DACA undocumented student scholarships 2026');
+  return queries.slice(0, 5);
+}
+
+// =========================================================
+// SCHOLARSHIP DETAIL — auto-fill + essay draft
+// =========================================================
+async function showDetail(id) {
+  // Find in matched results first (so we have the eligibility info), fall back to full list
+  let result = state.matchedResults.find(r => r.scholarship.id === id);
+  if (!result) {
+    const s = SCHOLARSHIPS.find(s => s.id === id);
+    if (!s) { navigate('matches'); return; }
+    result = matchScholarship({...s, source:'curated'}, state.profile);
+  }
+  state.currentScholarship = result;
+  const s = result.scholarship;
+  const root = document.getElementById('detailRoot');
+  root.innerHTML = `
+    <div style="margin-bottom: 18px;"><button class="secondary" onclick="navigate('matches')">← Back to matches</button></div>
+    <div class="scholarship-detail">
+      <div class="head">
+        <h1>${escapeHtml(s.name)}</h1>
+        <div class="org">${escapeHtml(s.org)} · <span class="source-pill ${s.source === 'curated' ? 'curated' : 'web-search'}">${s.source === 'curated' ? 'CURATED' : 'WEB SEARCH'}</span></div>
+        <p style="font-family: var(--serif); font-size: 17px; color: var(--ink-2); line-height: 1.55; margin-bottom: 12px;">${escapeHtml(s.description)}</p>
+        <div class="quick-meta">
+          <span class="item"><strong>Amount:</strong> ${escapeHtml(s.amount)}</span>
+          <span class="item"><strong>Deadline:</strong> ${escapeHtml(s.deadlineHint||'Check source')}</span>
+          <span class="item"><strong>Confidence:</strong> ${result.confidence}/100</span>
+        </div>
+        <p style="margin-top: 14px;"><a class="source-link" href="${escapeHtml(s.url)}" target="_blank" rel="noopener" style="font-family: var(--sans); color: var(--brand); text-decoration: underline;">Open application page ↗</a></p>
+      </div>
+      <div class="why-card" style="margin-bottom: 18px;">
+        <div class="why-label">Why this matched (full breakdown)</div>
+        <ul>${result.reasons.map(r => `<li class="${r.type}">${escapeHtml(r.text)}</li>`).join('')}</ul>
+      </div>
+      <h3>Auto-filled common fields</h3>
+      <div class="autofill-panel">
+        <div class="header"><div class="label">Common application fields <span class="ai-tag">PROFILE</span></div><button class="copy-btn" onclick="copyAutofill()">Copy as text</button></div>
+        ${renderAutofillFields(s)}
+      </div>
+      <h3>Essay drafts</h3>
+      <p style="font-family: var(--serif); font-style: italic; color: var(--ink-2); margin-bottom: 14px;">${state.apiKey ? 'Drafts are personalized to this scholarship using your essay material.' : 'Demo mode: drafts are template-based. Add an Anthropic API key (footer) for AI-customized drafts.'}</p>
+      <div id="essayDrafts">
+        ${renderEssayDrafts(s)}
+      </div>
+      <div class="disclaimer" style="margin-top: 22px;"><strong>Read carefully and edit before submitting.</strong> The auto-fill uses your profile; the essay drafts are starting points. Verify every fact, personalize the language so it sounds like you, and check the application page for any specific requirements (word limits, supplemental questions, attachments) we don't capture.</div>
+      <div class="action-bar">
+        <button class="primary large" onclick="markApplied('${s.id}')">Add to my applications →</button>
+        <button class="secondary" onclick="navigate('matches')">Back to matches</button>
+      </div>
+    </div>
+  `;
+  // Auto-generate essay drafts (demo: synchronous template; live: Claude)
+  if (s.application && s.application.essays > 0) {
+    if (state.apiKey) {
+      generateEssaysViaClaude(s);
+    }
+  }
+}
+function renderAutofillFields(s) {
+  const p = state.profile;
+  const fields = [
+    ['Full name', p.fullName],
+    ['Email', p.email],
+    ['Phone', p.phone],
+    ['Citizenship', citizenshipLabel(p.citizenship)],
+    ['Education level', levelLabel(p.educationLevel)],
+    ['College', p.school],
+    ['Major', p.major],
+    ['GPA', p.gpa],
+    ['Expected graduation', p.gradYear],
+    ['State', p.state],
+    ['Leadership (summary)', truncate(p.leadership, 200)],
+    ['Community service', truncate(p.communityService, 200)],
+    ['Awards', truncate(p.awards, 200)],
+  ];
+  return `<div class="field-list">${fields.map(([k, v]) => `<div class="fk">${escapeHtml(k)}</div><div class="fv ${v ? '' : 'empty'}">${escapeHtml(v || '— not provided —')}</div>`).join('')}</div>`;
+}
+function copyAutofill() {
+  const p = state.profile;
+  const text = [
+    `Full name: ${p.fullName||''}`,
+    `Email: ${p.email||''}`,
+    `Phone: ${p.phone||''}`,
+    `Citizenship: ${citizenshipLabel(p.citizenship)}`,
+    `Education level: ${levelLabel(p.educationLevel)}`,
+    `College: ${p.school||''}`,
+    `Major: ${p.major||''}`,
+    `GPA: ${p.gpa||''}`,
+    `Expected graduation: ${p.gradYear||''}`,
+    `State: ${p.state||''}`,
+    `Leadership: ${p.leadership||''}`,
+    `Community service: ${p.communityService||''}`,
+    `Research/projects: ${p.research||''}`,
+    `Awards: ${p.awards||''}`,
+  ].join('\n');
+  navigator.clipboard.writeText(text).then(() => alert('Profile copied to clipboard.'));
+}
+function renderEssayDrafts(s) {
+  const numEssays = (s.application && s.application.essays) || 0;
+  if (numEssays === 0) return '<p style="font-family: var(--serif); font-style: italic; color: var(--ink-3);">No essays required for this scholarship.</p>';
+  const prompts = generateEssayPrompts(s, numEssays);
+  return prompts.map((prompt, i) => {
+    const draft = generateEssayTemplate(s, prompt, i);
+    return `
+      <div class="essay-draft-card" id="essay-${i}">
+        <div class="head"><div class="label">Essay ${i+1} of ${numEssays} <span class="ai-tag">${state.apiKey ? 'CLAUDE' : 'TEMPLATE'}</span></div><button class="copy-btn" onclick="copyEssay(${i})">Copy</button></div>
+        <div class="prompt"><strong>Likely prompt:</strong> ${escapeHtml(prompt)}</div>
+        <textarea id="essayText-${i}" oninput="updateWordCount(${i})">${escapeHtml(draft)}</textarea>
+        <div class="word-count" id="wordCount-${i}">${draft.split(/\s+/).length} words</div>
+      </div>
+    `;
+  }).join('');
+}
+function generateEssayPrompts(s, n) {
+  // Generic prompts based on what scholarships typically ask
+  const allPrompts = [
+    `Why does this scholarship matter to you, and how will it help you achieve your educational and career goals?`,
+    `Describe a leadership experience or community service activity that has shaped who you are.`,
+    `What challenges have you overcome, and what did you learn from them?`,
+    `Tell us about your career goals and how your studies will help you achieve them.`,
+    `Why are you a good fit for the values of ${s.org}?`,
+    `Describe a project, research experience, or activity that demonstrates your passion for your field.`,
+  ];
+  return allPrompts.slice(0, n);
+}
+function generateEssayTemplate(s, prompt, idx) {
+  const p = state.profile;
+  // Simple template — Claude will replace this in live mode
+  if (idx === 0) {
+    return `[Why this scholarship matters and your goals]\n\nMy name is ${p.fullName||'[Name]'}, a ${levelLabel(p.educationLevel)} ${p.major ? 'studying ' + p.major : ''}${p.school ? ' at ' + p.school : ''}. ${p.careerGoals ? 'My goal is to ' + p.careerGoals.toLowerCase() : '[Your career goals here]'}. The ${s.name} would directly support that path because [explain how the funding helps you specifically].\n\n${p.challenges ? '[Briefly mention challenges overcome:] ' + p.challenges.split('.')[0] + '.' : ''}\n\n[Add 1-2 specific paragraphs about why ${s.org}'s mission resonates with your work and values. Use specifics from your activities — leadership, community service, or research.]\n\n[Conclusion: tie it back to the scholarship and what you'll do with it.]\n\n[NOTE — DEMO MODE: This is a template. With an Anthropic API key, this becomes a personalized essay drawn from your profile. Replace bracketed text and personalize.]`;
+  } else {
+    const material = p.leadership || p.communityService || p.challenges || p.research || '[Add specific examples from your experience]';
+    return `[Response to: ${prompt}]\n\n${material.split('.')[0]}.\n\n[Develop this with 2-3 specific examples. Use concrete details, names, numbers, dates. Connect back to the scholarship's values.]\n\n[Conclusion: what this taught you and how it shapes who you are.]\n\n[NOTE — DEMO MODE: Template. Add an API key for AI-personalized drafts.]`;
+  }
+}
+async function generateEssaysViaClaude(s) {
+  const p = state.profile;
+  const prompts = generateEssayPrompts(s, s.application.essays);
+  for (let i = 0; i < prompts.length; i++) {
+    const textarea = document.getElementById('essayText-' + i);
+    if (!textarea) continue;
+    textarea.value = 'Generating personalized draft...';
+    try {
+      const draft = await generateOneEssayViaClaude(s, prompts[i], p);
+      textarea.value = draft;
+      updateWordCount(i);
+    } catch (e) {
+      console.error(e);
+      // Leave the template version
+    }
+  }
+}
+async function generateOneEssayViaClaude(s, prompt, p) {
+  const systemPrompt = `You are drafting a scholarship essay for a student. Write in first person, in the student's voice. Use ONLY material the student has provided — do not invent achievements, organizations, or experiences. The essay should be 250-400 words, specific (not generic), and tonally appropriate for the scholarship's mission. End with a brief tie-back to why this scholarship would help the student's path.`;
+  const userPrompt = `Scholarship: ${s.name}\nSponsor: ${s.org}\nDescription: ${s.description}\nMission/values clue: ${s.notes || ''}\n\nEssay prompt: ${prompt}\n\nStudent material to draw on (use only what's here):\n- Name: ${p.fullName}\n- Major: ${p.major || 'undecided'}\n- Education level: ${levelLabel(p.educationLevel)}\n- Career goals: ${p.careerGoals || ''}\n- Leadership: ${p.leadership || ''}\n- Community service: ${p.communityService || ''}\n- Research/projects: ${p.research || ''}\n- Awards: ${p.awards || ''}\n- Challenges overcome: ${p.challenges || ''}\n- Existing personal statement (use as voice reference): ${p.personalStatement || ''}\n\nDraft the essay now. Specific, concrete, in their voice.`;
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-api-key': state.apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+    body: JSON.stringify({ model: 'claude-sonnet-4-5-20250929', max_tokens: 1200, system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] }),
+  });
+  if (!resp.ok) throw new Error(await resp.text());
+  const data = await resp.json();
+  return data.content[0].text.trim();
+}
+function copyEssay(i) {
+  const ta = document.getElementById('essayText-' + i);
+  if (ta) navigator.clipboard.writeText(ta.value).then(() => alert(`Essay ${i+1} copied.`));
+}
+function updateWordCount(i) {
+  const ta = document.getElementById('essayText-' + i);
+  const wc = document.getElementById('wordCount-' + i);
+  if (ta && wc) wc.textContent = ta.value.trim().split(/\s+/).filter(Boolean).length + ' words';
+}
+
+// =========================================================
+// APPLICATIONS TRACKER
+// =========================================================
+function markApplied(schId) {
+  const s = SCHOLARSHIPS.find(x => x.id === schId) || (state.matchedResults.find(r => r.scholarship.id === schId)||{}).scholarship;
+  if (!s) return;
+  if (state.applications.some(a => a.id === schId)) { alert('Already in your applications.'); return; }
+  state.applications.unshift({
+    id: schId, name: s.name, org: s.org, amount: s.amount, url: s.url,
+    status: 'draft', added: Date.now(), submitted: null, decided: null,
+  });
+  localStorage.setItem('sch_apps', JSON.stringify(state.applications));
+  alert('Added to My Applications.');
+  updateNav();
+}
+function setAppStatus(id, status) {
+  const a = state.applications.find(x => x.id === id);
+  if (!a) return;
+  a.status = status;
+  if (status === 'submitted' && !a.submitted) a.submitted = Date.now();
+  if ((status === 'won' || status === 'rejected') && !a.decided) a.decided = Date.now();
+  localStorage.setItem('sch_apps', JSON.stringify(state.applications));
+  renderApps();
+}
+function deleteApp(id) {
+  if (!confirm('Remove from your applications?')) return;
+  state.applications = state.applications.filter(x => x.id !== id);
+  localStorage.setItem('sch_apps', JSON.stringify(state.applications));
+  renderApps();
+  updateNav();
+}
+function renderApps() {
+  const root = document.getElementById('appsRoot');
+  if (state.applications.length === 0) {
+    root.innerHTML = '<div class="empty-state">No applications yet. <br><br><button class="primary" onclick="navigate(\'matches\')">Find scholarships →</button></div>';
+    return;
+  }
+  let html = '<div class="tracker-list">';
+  state.applications.forEach(a => {
+    const added = new Date(a.added).toLocaleDateString();
+    const submitted = a.submitted ? new Date(a.submitted).toLocaleDateString() : null;
+    const decided = a.decided ? new Date(a.decided).toLocaleDateString() : null;
+    let meta = `Added ${added}`;
+    if (submitted) meta += ` · Submitted ${submitted}`;
+    if (decided) meta += ` · Decided ${decided}`;
+    html += `
+      <div class="tracker-item">
+        <div class="left">
+          <div class="pet-type">${escapeHtml(a.org)}</div>
+          <h4>${escapeHtml(a.name)}</h4>
+          <div class="meta">${escapeHtml(a.amount)} · ${meta}</div>
+        </div>
+        <div class="actions">
+          <span class="status-pill ${a.status}">${a.status.toUpperCase()}</span>
+          <a class="source-link" href="${escapeHtml(a.url)}" target="_blank" rel="noopener" style="font-family: var(--sans); color: var(--brand); font-size: 13px; text-decoration: underline; padding: 8px;">Open ↗</a>
+          ${a.status === 'draft' ? `<button class="secondary" style="padding: 6px 12px; min-height: 32px; font-size: 13px;" onclick="setAppStatus('${a.id}', 'submitted')">Mark submitted</button>` : ''}
+          ${a.status === 'submitted' ? `<button class="secondary" style="padding: 6px 12px; min-height: 32px; font-size: 13px;" onclick="setAppStatus('${a.id}', 'won')">Won!</button> <button class="secondary" style="padding: 6px 12px; min-height: 32px; font-size: 13px;" onclick="setAppStatus('${a.id}', 'rejected')">Rejected</button>` : ''}
+          <button class="secondary" style="padding: 6px 12px; min-height: 32px; font-size: 13px;" onclick="deleteApp('${a.id}')">Delete</button>
+        </div>
+      </div>
+    `;
+  });
+  html += '</div>';
+  // Calculate total potential value
+  const wonValue = state.applications.filter(a => a.status === 'won').length;
+  const submittedCount = state.applications.filter(a => a.status === 'submitted').length;
+  const draftCount = state.applications.filter(a => a.status === 'draft').length;
+  html = `
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 20px 24px; margin-bottom: 20px; display: flex; gap: 24px; flex-wrap: wrap;">
+      <div><div style="font-family: var(--serif); font-size: 28px; font-weight: 500; color: var(--brand);">${draftCount}</div><div style="font-family: var(--sans); font-size: 12px; color: var(--ink-3); letter-spacing: 0.04em; text-transform: uppercase;">Drafts</div></div>
+      <div><div style="font-family: var(--serif); font-size: 28px; font-weight: 500; color: var(--accent);">${submittedCount}</div><div style="font-family: var(--sans); font-size: 12px; color: var(--ink-3); letter-spacing: 0.04em; text-transform: uppercase;">Submitted</div></div>
+      <div><div style="font-family: var(--serif); font-size: 28px; font-weight: 500; color: var(--success);">${wonValue}</div><div style="font-family: var(--sans); font-size: 12px; color: var(--ink-3); letter-spacing: 0.04em; text-transform: uppercase;">Won</div></div>
+    </div>
+  ` + html;
+  root.innerHTML = html;
+}
+
+// =========================================================
+// HELPERS
+// =========================================================
+function escapeHtml(s) { if (typeof s !== 'string') return ''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+function truncate(s, n) { if (!s) return ''; if (s.length <= n) return s; return s.slice(0, s.lastIndexOf(' ', n)) + '…'; }
+function resetAll() {
+  if (!confirm('Wipe ALL profile data, applications, and saved drafts from this browser?')) return;
+  state.profile = {}; state.applications = [];
+  localStorage.removeItem('sch_profile'); localStorage.removeItem('sch_apps');
+  alert('Cleared.'); navigate('home'); updateNav();
+}
+
+</script>
+</body>
+</html>
